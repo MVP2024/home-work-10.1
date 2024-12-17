@@ -33,5 +33,10 @@ data = [
     {'id': 615064591, 'state': 'CANCELED', 'date': '2018-10-14T08:21:33.419441'}]
 
 
-print(filter_by_state(list_of_dictionaries))
+"""Вывод отсортированного списка по state"""
+print(filter_by_state(list_of_dictionaries, 'EXECUTED'))
+print(filter_by_state(list_of_dictionaries, 'CANCELED'))
+
+
+"""Вывод отсортированного списка по date"""
 print(sort_by_date(data, True))
