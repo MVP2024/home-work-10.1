@@ -1,4 +1,4 @@
-from src.data import list_of_dictionaries, data
+from src.data import data
 from src.masks import get_mask_card_number, get_mask_account
 from src.widget import get_date, mask_account_card
 from src.processing import filter_by_state, sort_by_date
@@ -21,8 +21,8 @@ if __name__ == "__main__":
 
 
 """Вывод отсортированного списка по state"""
-print(filter_by_state(list_of_dictionaries, 'EXECUTED'))
-print(filter_by_state(list_of_dictionaries, 'CANCELED'))
+print(filter_by_state(data, 'EXECUTED'))
+print(filter_by_state(data, 'CANCELED'))
 
 
 """Вывод отсортированного списка по date"""
