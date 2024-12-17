@@ -1,5 +1,6 @@
 from typing import List, Dict
 
+
 def filter_by_state(list_of_dictionaries: list[dict[str, str]], state: str ='EXECUTED') -> list[dict[str, str]]:
 
     """
@@ -46,9 +47,8 @@ def sort_by_date(data: list[dict[str, str]], reverse: bool = True) -> list[dict[
 
     return sorted(data, key=get_data, reverse= reverse)
 
-sorted_data = sort_by_date(data)
 
 # Цикл для вывода  в столбик отсортированного на убывание по дате списка со словарями
-for dictionary_from_list in sorted_data:
-
-  print(dictionary_from_list, sep="\n")
+# for dictionary_from_list in sorted_data:
+#
+#   print(dictionary_from_list, sep="\n")
