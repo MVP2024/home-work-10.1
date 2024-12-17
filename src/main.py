@@ -1,7 +1,7 @@
 from src.data import data
-from src.masks import get_mask_card_number, get_mask_account
-from src.widget import get_date, mask_account_card
+from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
+from src.widget import get_date, mask_account_card
 
 ''' Вывод всех функций. '''
 if __name__ == "__main__":
