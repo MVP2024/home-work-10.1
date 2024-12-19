@@ -6,11 +6,17 @@ def mask_account_card(types_requisites: Union[str]) -> str:
 
     if "Счёт" in types_requisites or "Счет" in types_requisites:
 
+    if "Счёт" in types_requisites or "Счет" in types_requisites:
+
+        """Сравнивает 'счёт' или 'счет' в списке и возвращает замаскированный список"""
         """если указан счёт, возвращает <type> <**XXXX>"""
 
         return types_requisites[:4] + " " + "**" + types_requisites[-4:]
 
     elif "Visa" in types_requisites or "MasterCard" in types_requisites or "Maestro" in types_requisites:
+        """Сравнивает 'Visa' или 'MasterCard' или 'Maestro' в списке и возвращает
+
+        имя карты и её замаскированный номер"""
 
         """возвращает название и замаскированный номер, если указана карта
 

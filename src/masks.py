@@ -14,8 +14,7 @@ def get_mask_card_number(card_number: Union[str]) -> Union[str]:
 
 
 def get_mask_account(account_number: Union[str]) -> Union[str]:
-    """
-    Функция принимает на вход номер счёта и
+    """Функция принимает на вход номер счёта и
 
     возвращает замаскированный счёт в формате
 
