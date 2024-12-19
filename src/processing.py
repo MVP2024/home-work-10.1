@@ -31,14 +31,14 @@ def get_data(data) -> str:
 
 # Сортировка списка по дате с помощью функции get_date.
 def sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
-    """Сортирует список словарей по дате.
+    """Функция сортирует список словарей по дате"""
 
-    Аргументы:
+    """Аргументы:
     data (list): Список словарей с данными.
-    reverse (bool): Порядок сортировки (по умолчанию - убывание).
-
+    reverse (bool): Порядок сортировки (по умолчанию - убывание).  
+ 
     Возвращает:
     list: Отсортированный список словарей.
     """
-
+    
     return sorted(data, key=get_data, reverse=reverse)
