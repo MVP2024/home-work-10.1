@@ -2,7 +2,7 @@ from typing import Union
 
 
 def mask_account_card(types_requisites: Union[str]) -> str:
-    """Функция, которая создаёт условие и  обрабатывает
+    """Функция, которая создаёт условие и обрабатывает
 
     информацию о видах карт, так и о счетах и
 

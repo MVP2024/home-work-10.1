@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-
+# Функция фильтрует список словарей по ключу.
 def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
     """Функция фильтрует список словарей по ключу state.
 
@@ -14,23 +14,11 @@ def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> List
     """
 
     filtered_list = []
-    for dictionary_from_list in data:
-        if dictionary_from_list.get("state", "Неправильно введён ключ") == state:
-            filtered_list.append(dictionary_from_list)
+    for key_value in data:
+        if key_value.get("state", "Неправильно введён ключ") == state:
+            filtered_list.append(key_value)
 
     return filtered_list
-
-
-"""
-    Сортирует список словарей по дате.
-
-    Аргументы:
-    data (list): Список словарей с данными.
-    reverse (bool): Порядок сортировки (по умолчанию - убывание).
-
-    Возвращает:
-    list: Отсортированный список словарей.
-    """
 
 
 # Функция для извлечения определённого слова из списка со словарём
@@ -42,5 +30,14 @@ def get_data(data) -> str:
 
 # Сортировка списка по дате с помощью функции get_date.
 def sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
+    """ Сортирует список словарей по дате.
+
+        Аргументы:
+        data (list): Список словарей с данными.
+        reverse (bool): Порядок сортировки (по умолчанию - убывание).
+
+        Возвращает:
+        list: Отсортированный список словарей.
+        """
 
     return sorted(data, key=get_data, reverse=reverse)
