@@ -2,23 +2,19 @@ from typing import Union
 
 
 def mask_account_card(types_requisites: Union[str]) -> str:
-    """Функция, которая создаёт условие и обрабатывает
+    """Функция принимает на вход вид и номер карты или счёт с номером"""
 
-    информацию о видах карт, так и о счетах и
+    if "Счёт" in types_requisites or "Счет" in types_requisites:
 
-    возвращает название и замаскированный номер, если указана карта
-
-    в формате <type> <XXXX XX** **** XXXX>,
-
-     если указан счёт, то
-
-      <type> <**XXXX>"""
-
-    if "Счёт" in types_requisites or "Счет" in types_requisites:  # Для счёта.
+        """если указан счёт, возвращает <type> <**XXXX>"""
 
         return types_requisites[:4] + " " + "**" + types_requisites[-4:]
 
-    elif "Visa" in types_requisites or "MasterCard" in types_requisites or "Maestro" in types_requisites:  # Для карт.
+    elif "Visa" in types_requisites or "MasterCard" in types_requisites or "Maestro" in types_requisites:
+
+        """возвращает название и замаскированный номер, если указана карта
+
+        в формате < type > < XXXX XX ** ** ** XXXX >"""
 
         return types_requisites[0:-12] + " " + "** **** " + types_requisites[-4:]
 
