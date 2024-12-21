@@ -25,15 +25,10 @@ pip install -r requirements.txt
 ```commandline
 EXCHANGE_API_KEY=*ваш_ключ_api*-
 ```
-5. Перейдите в директорию проекта
+5. Перейдите в директорию проекта.
 
 ## Использование
 
-### Импорт функций
-
-```
-from <your_module_name> import <filter_by_state>, <sort_by_date> # вызывать импорт без <>.
-```
 ### Функции
 
 
