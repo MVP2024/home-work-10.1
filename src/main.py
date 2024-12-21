@@ -22,6 +22,5 @@ if __name__ == "__main__":
     print(filter_by_state(data, "EXECUTED"))
     print(filter_by_state(data, "CANCELED"))
 
-    """Вывод отсортированного списка по date"""
+    """Вывод списка по date отсортированного (по-умолчанию) на убывание"""
     print(sort_by_date(data, True))
-    print(sort_by_date(data, False))
