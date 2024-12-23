@@ -6,12 +6,12 @@ def get_mask_card_number(card_number: Union[str]) -> Union[str]:
 
     # проверяет если в номере карты не 16 символов, то возвращает ошибку.
     if len(card_number) != 16:
-        return "Ошибка, некорректный номер карты"
+        return "Ошибка: Некорректная длина номера карты"
 
     # если в номере карты присутствуют кроме цифр, другие символы, то возвращает ошибку.
     for char in card_number:
         if not char.isdigit():
-            return "Ошибка, проверьте правильность ввода номера карты"
+            return "Ошибка: Посторонние символы в номере карты"
 
     # маскирует номер карты.
     masked_card_number = card_number[:4] + " " + card_number[4:6] + "** **** " + card_number[12:]
@@ -27,7 +27,7 @@ def get_mask_account(account_number: Union[str]) -> str | ValueError | Any:
         # проверяем если в номере счёта присутствуют вместо цифр другие символы
         # и если длинна цифр не равна 16, то возвращает ошибку.
         if not account_number.isdigit() or len(account_number) != 16:
-            raise ValueError("Ошибка: неправильный номер счёта")
+            raise ValueError("Ошибка: Неправильный номер счёта")
 
         # маскируем номер счёта
         masked_account = "**" + account_number[-4:]
