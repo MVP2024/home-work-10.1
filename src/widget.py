@@ -6,8 +6,6 @@ def mask_account_card(types_requisites: Union[str]) -> str:
 
     if "Счёт" in types_requisites or "Счет" in types_requisites:
 
-    if "Счёт" in types_requisites or "Счет" in types_requisites:
-
         """Сравнивает 'счёт' или 'счет' в списке и возвращает замаскированный список"""
         """если указан счёт, возвращает <type> <**XXXX>"""
 
