@@ -25,7 +25,7 @@ def get_mask_account(account_number: Union[str]) -> str | ValueError | Any:
     try:
 
         # проверяем если в номере счёта присутствуют вместо цифр другие символы
-        # и длинна цифр не равна 16, то возвращает ошибку.
+        # и если длинна цифр не равна 16, то возвращает ошибку.
         if not account_number.isdigit() or len(account_number) != 16:
             raise ValueError("Ошибка: неправильный номер счёта")
 
