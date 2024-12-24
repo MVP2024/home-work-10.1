@@ -59,17 +59,19 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
         return ve
 
 
-def get_date(data_full: Union[str]) -> str:
+def get_date(data_full: Union[str]) -> str | ValueError | Any:
     """Функция, которая принимает на вход строку с датой в формате
 
-    "2024-03-11T02:26:18.671407"
+    "2024-03-11T02:26:18.671407"""
+    try:
+        date_list = data_full.split("T")[0].split("-")
+        day = date_list[2]
+        month = date_list[1]
+        year = date_list[0]
 
-    и возвращает строку с датой в формате
+        # возвращает строку с датой в формате ДД.ММ.ГГГГ
+        return f"{day}.{month}.{year}"
 
-    'ДД.ММ.ГГГГ'."""
-
-    year = data_full[:4]
-    month = data_full[5:7]
-    day = data_full[8:10]
-
-    return f"{year}.{month}.{day}"
+        # при неправильном формате возвращает ошибку.
+    except ValueError as ve:
+        return ve
