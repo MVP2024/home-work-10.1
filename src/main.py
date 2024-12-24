@@ -11,8 +11,10 @@ if __name__ == "__main__":
     print(get_mask_card_number("78541212234"))
     print(get_mask_card_number("7854121223455678444445"))
     print(get_mask_card_number("78541апр555678рп"))
+    print(get_mask_card_number(""))
     print(get_mask_account("7854121223455678"))
     print(get_mask_account("78541211-*/45567"))
+    print(get_mask_account(""))
 
     """ Вывод название карты и скрытого номера
         или счёта со скрытым номером """
@@ -20,10 +22,13 @@ if __name__ == "__main__":
     print(mask_account_card("Visa Silver 7000792289606361"))
     print(mask_account_card("Счет 73654108430135874305"))
     print(mask_account_card("Счёт 7365410/**874305"))
+    print(mask_account_card(""))
 
     """Вывод даты"""
     print(get_date("2024-03-11T02:26:18.671407"))
-    print(get_date("205454654502:26:18.671407"))
+    print(get_date("2054---3--11:26:18.671407"))
+    print(get_date(""))
+    print(get_date("4587^1"))
 
     """Вывод отсортированного списка по state"""
     print(filter_by_state(data, "EXECUTED"))

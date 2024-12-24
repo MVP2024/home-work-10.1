@@ -20,17 +20,18 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
 
             # если элементы не цифры, то возникает ошибка.
             elif not char.isdigit():
-                raise ValueError("Ошибка: Присутствуют другие символы в номере карты.")
+                raise ValueError("Ошибка: Присутствуют другие символы в номере.")
+
             else:
-                raise ValueError("Ошибка: проверьте правильность номера карты")
+                raise ValueError("Ошибка: проверьте правильность номера.")
 
         # если номер карты или счёта больше 16 символов, то возникнет ошибка.
         if len(card_number) > 16:
-            raise ValueError("Ошибка: Слишком длинный номер карты")
+            raise ValueError("Ошибка: Слишком длинный номер.")
 
         # если номер карты меньше 16 символов, то возникнет ошибка.
         elif len(card_number) < 16:
-            raise ValueError("Ошибка: Номер карты короткий")
+            raise ValueError("Ошибка: Слишком короткий номер.")
 
         card_type_str = "".join(card_type)
         card_number_str = "".join(card_number)
@@ -62,8 +63,15 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
 def get_date(data_full: Union[str]) -> str | ValueError | Any:
     """Функция, которая принимает на вход строку с датой в формате
 
-    "2024-03-11T02:26:18.671407"""
+    '2024-03-11T02:26:18.671407'"""
     try:
+        # если передан пустая строка, или не правильно указан формат даты, то возникнет ошибка.
+        if data_full == "":
+            raise ValueError("Ошибка: Не указана дата!")
+        elif len(data_full) != 26:
+            raise ValueError("Ошибка: Неправильно указан формат даты!")
+
+        # разделяем строку.
         date_list = data_full.split("T")[0].split("-")
         day = date_list[2]
         month = date_list[1]
