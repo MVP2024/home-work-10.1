@@ -45,7 +45,7 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
             masked_card_number = "Счет **" + card_number_str[-4:]
 
         # с помощью функции "any()" ищем определённый объект в итерируемой строке "card_type_str".
-        elif any(word in card_type_str for word in ["visa", "maestro", "mastercard", "union"]):
+        elif any(word in card_type_str for word in ["visa", "maestro", "mastercard", "union", "мир"]):
 
             # объединяем слова с заглавными буквами и разделяем методом "split()".
             card_type_str = " ".join(word.capitalize() for word in card_type_str.split())
