@@ -2,24 +2,23 @@ from typing import Any, Dict, List
 
 
 # Функция фильтрует список словарей по ключу.
-def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
-    """Функция фильтрует список словарей по ключу state.
+def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> list[dict[str, Any]] | KeyError:
+    """Функция фильтрует список словарей по ключу state."""
+    try:
+        if not data:
+            raise ValueError("Нет данных")
+        filtered_list: list[dict[str, Any]] = []
+        for key_value in data:
+            if "state" not in key_value:
+                raise KeyError("Ключ 'state' не найден.")
+            if key_value["state"] == state:
+                filtered_list.append(key_value)
 
-    Аргументы:
-    list_of_dictionaries (list): Список словарей, которые необходимо отфильтровать.
-    State (str): Значение ключа state, по которому происходит фильтрация (по умолчанию 'EXECUTED').
+        # возвращает новый список словарей, содержащий только те словари, у которых ключ state соответствует значению
+        return filtered_list
 
-    Возвращает:
-    filtered_list: Новый список словарей, содержащий только те словари,
-    у которых ключ state соответствует указанному значению.
-    """
-
-    filtered_list = []
-    for key_value in data:
-        if key_value.get("state", "Неправильно введён ключ") == state:
-            filtered_list.append(key_value)
-
-    return filtered_list
+    except KeyError as ve:
+        return ve
 
 
 # Функция для извлечения определённого слова из списка со словарём
