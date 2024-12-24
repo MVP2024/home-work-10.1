@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
     """Вывод даты"""
     print(get_date("2024-03-11T02:26:18.671407"))
+    print(get_date("205454654502:26:18.671407"))
 
     """Вывод отсортированного списка по state"""
     print(filter_by_state(data, "EXECUTED"))
