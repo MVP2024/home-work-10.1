@@ -23,7 +23,7 @@ pip install -r requirements.txt
 ```
 4. Создайте файл *.env* в корневом каталоге проекта и добавьте ваш *API* ключ, (он же токен или API token):
 ```commandline
-EXCHANGE_API_KEY=*ваш_ключ_api*-
+EXCHANGE_API_KEY=*ваш_ключ_api*
 ```
 5. Перейдите в директорию проекта
 
