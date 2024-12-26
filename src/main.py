@@ -26,6 +26,11 @@ if __name__ == "__main__":
     print(mask_account_card("Счёт 7365410/**874305"))
     print(mask_account_card("Счёт 2345234578894556"))
     print(mask_account_card("123456"))
+    print(mask_account_card("MasterCard 123456"))
+    print(mask_account_card("MasterCard 1234567890369854"))
+    print(mask_account_card("MasterCard 12345656756767657676"))
+    print(mask_account_card("MasterCard 123/*/*///*//*kjhkjhkjhkj456"))
+    print(mask_account_card("MasterCard 123456/*/*/"))
 
     """Вывод даты"""
     print(get_date("2024-03-11T02:26:18.671407"))

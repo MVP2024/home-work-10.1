@@ -1,8 +1,12 @@
-from typing import Union, Any
+from typing import Any, Union
 
 
 def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
     """Функция принимает на вход вид и номер карты или счёта с номером"""
+
+    # Проверка на пустую строку
+    if not types_requisites.strip():
+        return "Ошибка: входная строка пустая."
 
     # Создаём переменные-списки для букв и цифр из аргумента.
     card_type = []
@@ -11,7 +15,7 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
     # Перебираем аргумент.
     for char in types_requisites:
 
-        # Проверяем, если есть буквы и пробел, то записываем в переменную "card_type" и переводим  в нижний регистр.
+        # Проверяем, если есть буквы и пробел, то записываем в переменную "card_type" и переводим в нижний регистр.
         if char.isalpha() or char.isspace():
             card_type.append(char.lower())
 
@@ -21,7 +25,7 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
 
         # Проверяем, если кроме букв и цифр есть другие символы, возвращает ошибку.
         else:
-            return "Ошибка: Присутствуют другие символы в номере карты/счёта."
+            return "Ошибка: неверно указан номер карты/счёта."
 
     card_number_str = "".join(card_number)
     card_type_str = "".join(card_type).strip()
@@ -32,14 +36,17 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
 
     # Проверяем, если номер карты меньше 16 символов, то возникнет ошибка.
     if len(card_number_str) < 16:
-        return "Ошибка: слишком короткий номер карты/счёта."
+        return "Ошибка: неверно указан номер карты/счёта."
 
     # Проверяем, если номер карты или счёта больше 16 символов, то возникнет ошибка.
     elif len(card_number_str) > 16:
-        return "Ошибка: Слишком длинный номер карты/счёта."
+        return "Ошибка: неверно указан номер карты/счёта."
 
     # Проверяем, если не указан тип карты, возвращает ошибку.
-    if not any(card in card_type_str for card in ["visa", "счёт", "счет", "мир", "maestro", "mastercard", "union"]):
+    if not any(
+        card in card_type_str
+        for card in ["visa", "счёт", "счет", "мир", "maestro", "mastercard", "union", "american express"]
+    ):
         return "Ошибка: номер указан без типа карты/счёта."
 
     # Сверяем, есть ли слова "счет" или "счёт" в строке "card_type_str".
@@ -47,7 +54,11 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
         card_type_str = card_type_str.capitalize()
         return f"{card_type_str} **{card_number_str[-4:]}"
 
-    # Форматирование для карт.
+    # Проверяем, если тип карты - MasterCard, возвращаем его без изменений
+    if "mastercard" in card_type_str:
+        return f"MasterCard {card_number_str}"
+
+    # Форматирование для остальных карт.
     card_type_str = " ".join(word.capitalize() for word in card_type_str.split())
     masked_card_number = f"{card_type_str} {card_number_str[:4]} {card_number_str[4:6]} ** **** {card_number_str[-4:]}"
 
@@ -56,11 +67,15 @@ def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
 
 def get_date(data_full: Union[str]) -> str | ValueError | Any:
     """Функция, которая принимает на вход строку с датой в формате "YYYY-MM-DDTHH:MM:SS" и
-
-    возвращает дату в формате "ДД.ММ.ГГГГ"."""
+    возвращает дату в формате "ДД.ММ.ГГГГ".
+    :rtype:"""
 
     if not data_full:
         return "Ошибка: входная строка пустая."
+
+    # Проверка на наличие символа "T"
+    if "T" not in data_full:
+        return "Ошибка: неверный формат даты."
 
     # Разделяем дату и время
     date_part = data_full.split("T")[0]
