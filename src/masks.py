@@ -1,52 +1,49 @@
-from typing import Union, Any
+from typing import Union
 
 
-def get_mask_card_number(card_number: Union[str]) -> str | ValueError:
-    try:
-        """Функция принимает на вход номер карты и возвращает замаскированный номер"""
+def get_mask_card_number(card_number: Union[str]) -> Union[str]:
+    """Функция принимает на вход номер карты и возвращает замаскированный номер"""
 
-        # проверяет если в номере карты не 16 символов, то возвращает ошибку.
-        if len(card_number) > 16:
-            raise ValueError("Ошибка: Слишком длинный номер карты.")
-        elif len(card_number) < 16:
-            raise ValueError("Ошибка: Слишком короткий номер карты.")
+    # Проверяем, является ли строка пустой
+    if not card_number:
+        return "Ошибка: входная строка пустая."
 
-        # если в номере карты присутствуют кроме цифр, другие символы, то возвращает ошибку.
-        for char in card_number:
-            if not char.isdigit():
-                raise ValueError("Ошибка: Присутствуют другие символы в номере карты")
+    # Проверяем длину номера карты
+    if len(card_number) < 16:
+        return "Ошибка: слишком короткий номер."
+    elif len(card_number) > 16:
+        return "Ошибка: слишком длинный номер."
 
-        # маскирует номер карты.
-        masked_card_number = card_number[:4] + " " + card_number[4:6] + "** **** " + card_number[12:]
+    # Проверяем, если в номере карты присутствуют кроме цифр, другие символы
+    if not card_number.isdigit():
+        return "Ошибка: присутствуют другие символы."
 
-        # возвращаем замаскированный номер в формате XXXX XX** **** XXXX.
-        return masked_card_number
+    # Маскируем номер карты
+    masked_card_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[12:]}"
 
-    except ValueError as ve:
-        return ve
+    # Возвращаем замаскированный номер в формате XXXX XX** **** XXXX.
+    return masked_card_number
 
 
-def get_mask_account(account_number: Union[str]) -> str | ValueError | Any:
-    try:
-        """Функция принимает на вход номер счёта и возвращает замаскированный счёт"""
+def get_mask_account(account_number: Union[str]) -> Union[str, ValueError]:
+    """Функция принимает на вход номер счёта и возвращает замаскированный счёт"""
 
-        # если в номере счёта присутствуют другие вместо цифр другие символы, возвращает ошибку
-        if not account_number.isdigit():
-            raise ValueError("Ошибка: Присутствуют другие символы в номере счёта.")
+    # Проверяем, является ли строка пустой
+    if not account_number:
+        return "Ошибка: входная строка пустая."
 
-        # если длинна номера счёта больше 16 символов, возвращает ошибку.
-        elif len(account_number) > 16:
-            raise ValueError("Ошибка: Слишком длинный номер счёта.")
+    # Проверяем длину номера счёта
+    if len(account_number) < 16:
+        return "Ошибка: слишком короткий номер."
+    elif len(account_number) > 16:
+        return "Ошибка: слишком длинный номер."
 
-        # если длинна номера счёта меньше 16 символов, возвращает ошибку.
-        elif len(account_number) < 16:
-            raise ValueError("Ошибка: Номер карты слишком короткий.")
+    # Проверяем, если в номере счёта присутствуют кроме цифр, другие символы
+    if not account_number.isdigit():
+        return "Ошибка: присутствуют другие символы."
 
-        # маскируем номер счёта
-        masked_account: str = "**" + account_number[-4:]
+    # Маскируем номер счёта
+    masked_account = "**" + account_number[-4:]
 
-        # возвращаем замаскированный номер.
-        return masked_account
-
-    except ValueError as ve:
-        return ve
+    # Возвращаем замаскированный номер
+    return masked_account

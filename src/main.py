@@ -20,9 +20,12 @@ if __name__ == "__main__":
         или счёта со скрытым номером """
     print(mask_account_card("Visa Platinum 7000792289606361"))
     print(mask_account_card("Visa Silver 7000792289606361"))
+    print(mask_account_card(""))
+    print(mask_account_card("Maestro Bobr Kurwa 2345567889455565"))
     print(mask_account_card("Счет 73654108430135874305"))
     print(mask_account_card("Счёт 7365410/**874305"))
-    print(mask_account_card(""))
+    print(mask_account_card("Счёт 2345234578894556"))
+    print(mask_account_card("123456"))
 
     """Вывод даты"""
     print(get_date("2024-03-11T02:26:18.671407"))
