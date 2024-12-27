@@ -3,47 +3,6 @@ from src.widget import mask_account_card, get_date
 
 
 # Тестирование функции mask_account_card
-# Фикстура для тестирования
-@pytest.fixture
-def valid_visa_card():
-    return "Visa 1234567812345678"
-
-
-@pytest.fixture
-def valid_mastercard():
-    return "MasterCard 1234567812345678"
-
-
-@pytest.fixture
-def valid_account():
-    return "Счёт 1234567812345678"
-
-
-@pytest.fixture
-def short_card():
-    return "Visa 12345678"  # 8 цифр
-
-
-@pytest.fixture
-def long_card():
-    return "Visa 12345678123456789"  # 17 цифр
-
-
-@pytest.fixture
-def invalid_card_chars():
-    return "Visa 1234abcd5678efgh"  # Содержит буквы
-
-
-@pytest.fixture
-def empty_card():
-    return ""  # Пустая строка
-
-
-@pytest.fixture
-def no_type_card():
-    return "1234567812345678"  # Нет типа карты
-
-
 # Параметризация тестов
 @pytest.mark.parametrize(
     "types_requisites, expected",
@@ -63,81 +22,7 @@ def test_mask_account_card(types_requisites, expected):
     assert mask_account_card(types_requisites) == expected
 
 
-# Тесты с использованием фикстур
-def test_valid_visa_card(valid_visa_card):
-    assert mask_account_card(valid_visa_card) == "Visa 1234 56 ** **** 5678"
-
-
-def test_valid_mastercard(valid_mastercard):
-    assert mask_account_card(valid_mastercard) == "MasterCard 1234567812345678"
-
-
-def test_valid_account(valid_account):
-    assert mask_account_card(valid_account) == "Счёт **5678"
-
-
-def test_short_card(short_card):
-    assert mask_account_card(short_card) == "Ошибка: неверно указан номер карты/счёта."
-
-
-def test_long_card(long_card):
-    assert mask_account_card(long_card) == "Ошибка: неверно указан номер карты/счёта."
-
-
-def test_invalid_card_chars(invalid_card_chars):
-    assert mask_account_card(invalid_card_chars) == "Ошибка: неверно указан номер карты/счёта."
-
-
-def test_empty_card(empty_card):
-    assert mask_account_card(empty_card) == "Ошибка: входная строка пустая."
-
-
-def test_no_type_card(no_type_card):
-    assert mask_account_card(no_type_card) == "Ошибка: номер указан без типа карты/счёта."
-
-
 # Тестирование функции `get_date`
-# Фикстуры для тестирования
-@pytest.fixture
-def valid_date():
-    return "2023-03-15T12:30:00"  # Корректная дата
-
-
-@pytest.fixture
-def leap_year_date():
-    return "2020-02-29T15:45:00"  # Корректная дата високосного года
-
-
-@pytest.fixture
-def invalid_date_format():
-    return "2023/03/15 12:30:00"  # Неверный формат даты
-
-
-@pytest.fixture
-def empty_date():
-    return ""  # Пустая строка
-
-
-@pytest.fixture
-def no_time_part():
-    return "2023-03-15"  # Нет времени
-
-
-@pytest.fixture
-def invalid_month():
-    return "2023-13-15T12:30:00"  # Некорректный месяц
-
-
-@pytest.fixture
-def invalid_day():
-    return "2023-04-31T12:30:00"  # Некорректный день
-
-
-@pytest.fixture
-def invalid_characters():
-    return "2023-03-1aT12:30:00"  # Неверные символы в дате
-
-
 # Параметризация тестов
 @pytest.mark.parametrize(
     "data_full, expected",
@@ -157,36 +42,3 @@ def invalid_characters():
 )
 def test_get_date(data_full, expected):
     assert get_date(data_full) == expected
-
-
-# Тесты с использованием фикстур
-def test_valid_date(valid_date):
-    assert get_date(valid_date) == "15.03.2023"
-
-
-def test_leap_year_date(leap_year_date):
-    assert get_date(leap_year_date) == "29.02.2020"
-
-
-def test_invalid_date_format(invalid_date_format):
-    assert get_date(invalid_date_format) == "Ошибка: неверный формат даты."
-
-
-def test_empty_date(empty_date):
-    assert get_date(empty_date) == "Ошибка: входная строка пустая."
-
-
-def test_no_time_part(no_time_part):
-    assert get_date(no_time_part) == "Ошибка: неверный формат даты."
-
-
-def test_invalid_month(invalid_month):
-    assert get_date(invalid_month) == "Ошибка: некорректный месяц."
-
-
-def test_invalid_day(invalid_day):
-    assert get_date(invalid_day) == "Ошибка: некорректный день."
-
-
-def test_invalid_characters(invalid_characters):
-    assert get_date(invalid_characters) == "Ошибка: дата содержит недопустимые символы."
