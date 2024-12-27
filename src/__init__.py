@@ -1,0 +1,2 @@
+def widgetimport():
+    return None

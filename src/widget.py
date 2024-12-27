@@ -1,77 +1,123 @@
-from typing import Union, Any
+from typing import Any, Union
 
 
 def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
-    try:
-        """Функция принимает на вход вид и номер карты или счёта с номером"""
+    """Функция принимает на вход вид и номер карты или счёта с номером"""
 
-        # создаём переменные-списки для букв и цифр из аргумента.
-        card_type = []
-        card_number = []
+    # Проверка на пустую строку
+    if not types_requisites.strip():
+        return "Ошибка: входная строка пустая."
 
-        # если есть буквы и пробелы, то добавляем в card_type и переводим в нижний регистр.
-        for char in types_requisites:
-            if char.isalpha() or char.isspace():
-                card_type.append(char.lower())
+    # Создаём переменные-списки для букв и цифр из аргумента.
+    card_type = []
+    card_number = []
 
-            # если есть цифры, то добавляем в card_number.
-            elif char.isdigit():
-                card_number.append(char)
+    # Перебираем аргумент.
+    for char in types_requisites:
 
-            # если элементы не цифры, то возникает ошибка.
-            elif not char.isdigit():
-                raise ValueError("Ошибка: Присутствуют другие символы в номере карты.")
-            else:
-                raise ValueError("Ошибка: проверьте правильность номера карты")
+        # Проверяем, если есть буквы и пробел, то записываем в переменную "card_type" и переводим в нижний регистр.
+        if char.isalpha() or char.isspace():
+            card_type.append(char.lower())
 
-        # если номер карты или счёта больше 16 символов, то возникнет ошибка.
-        if len(card_number) > 16:
-            raise ValueError("Ошибка: Слишком длинный номер карты")
+        # Проверяем, если есть цифры, то записываем в переменную "card_number"
+        elif char.isdigit():
+            card_number.append(char)
 
-        # если номер карты меньше 16 символов, то возникнет ошибка.
-        elif len(card_number) < 16:
-            raise ValueError("Ошибка: Номер карты короткий")
+        # Проверяем, если кроме букв и цифр есть другие символы, возвращает ошибку.
+        else:
+            return "Ошибка: неверно указан номер карты/счёта."
 
-        card_type_str = "".join(card_type)
-        card_number_str = "".join(card_number)
+    card_number_str = "".join(card_number)
+    card_type_str = "".join(card_type).strip()
 
-        # сверяет, есть ли слова "счет" или "счёт" в объединённой строке "card_type_str".
-        if "счет" in card_type_str or "счёт" in card_type_str:
+    # Проверяем, если указан тип карты без номера, возвращает ошибку.
+    if len(card_number_str) == 0:
+        return f"Ошибка: тип '{card_type_str}' указан без номера."
 
-            # возвращаем копию строки со словами с заглавными буквами методом "capitalize()".
-            card_type_str = card_type_str.capitalize()
+    # Проверяем, если номер карты меньше 16 символов, то возникнет ошибка.
+    if len(card_number_str) < 16:
+        return "Ошибка: неверно указан номер карты/счёта."
 
-            # маска номера счёта.
-            masked_card_number = "Счет **" + card_number_str[-4:]
+    # Проверяем, если номер карты или счёта больше 16 символов, то возникнет ошибка.
+    elif len(card_number_str) > 16:
+        return "Ошибка: неверно указан номер карты/счёта."
 
-        # с помощью функции "any()" ищем определённый объект в итерируемой строке "card_type_str".
-        elif any(word in card_type_str for word in ["visa", "maestro", "mastercard", "union"]):
+    # Проверяем, если не указан тип карты, возвращает ошибку.
+    if not any(
+        card in card_type_str
+        for card in ["visa", "счёт", "счет", "мир", "maestro", "mastercard", "union", "american express"]
+    ):
+        return "Ошибка: номер указан без типа карты/счёта."
 
-            # объединяем слова с заглавными буквами и разделяем методом "split()".
-            card_type_str = " ".join(word.capitalize() for word in card_type_str.split())
+    # Сверяем, есть ли слова "счет" или "счёт" в строке "card_type_str".
+    if "счет" in card_type_str or "счёт" in card_type_str:
+        card_type_str = card_type_str.capitalize()
+        return f"{card_type_str} **{card_number_str[-4:]}"
 
-            # маскируем номер карты.
-            masked_card_number = card_type_str + " " + card_number_str[:-12] + " " + "** **** " + card_number_str[-4:]
+    # Проверяем, если тип карты - MasterCard, возвращаем его без изменений
+    if "mastercard" in card_type_str:
+        return f"MasterCard {card_number_str}"
 
-        # возвращает название и замаскированный номер карты или счёта.
-        return masked_card_number
-    except ValueError as ve:
-        return ve
+    # Форматирование для остальных карт.
+    card_type_str = " ".join(word.capitalize() for word in card_type_str.split())
+    masked_card_number = f"{card_type_str} {card_number_str[:4]} {card_number_str[4:6]} ** **** {card_number_str[-4:]}"
+
+    return masked_card_number
 
 
 def get_date(data_full: Union[str]) -> str | ValueError | Any:
-    """Функция, которая принимает на вход строку с датой в формате
+    """Функция, которая принимает на вход строку с датой в формате "YYYY-MM-DDTHH:MM:SS" и
+    возвращает дату в формате "ДД.ММ.ГГГГ".
+    :rtype:"""
 
-    "2024-03-11T02:26:18.671407"""
-    try:
-        date_list = data_full.split("T")[0].split("-")
-        day = date_list[2]
-        month = date_list[1]
-        year = date_list[0]
+    if not data_full:
+        return "Ошибка: входная строка пустая."
 
-        # возвращает строку с датой в формате ДД.ММ.ГГГГ
-        return f"{day}.{month}.{year}"
+    # Проверка на наличие символа "T"
+    if "T" not in data_full:
+        return "Ошибка: неверный формат даты."
 
-        # при неправильном формате возвращает ошибку.
-    except ValueError as ve:
-        return ve
+    # Разделяем дату и время
+    date_part = data_full.split("T")[0]
+    date_list = date_part.split("-")
+
+    if len(date_list) != 3:
+        return "Ошибка: неверный формат даты."
+
+    year, month, day = date_list
+
+    # Проверка, что все части даты являются цифрами
+    if not (year.isdigit() and month.isdigit() and day.isdigit()):
+        return "Ошибка: дата содержит недопустимые символы."
+
+    # Преобразование строковых значений в целые числа для проверки
+    year_int = int(year)
+    month_int = int(month)
+    day_int = int(day)
+
+    # Проверка корректности месяца и дня
+    if month_int < 1 or month_int > 12:
+        return "Ошибка: некорректный месяц."
+
+    # Проверка количества дней в месяце
+    if day_int < 1 or day_int > 31:
+        return "Ошибка: некорректный день."
+
+    # Проверка для февраля и месяцев с 30 днями
+    if month_int in [4, 6, 9, 11] and day_int > 30:
+        return "Ошибка: некорректный день."
+
+    if month_int == 2:
+        if (year_int % 4 == 0 and year_int % 100 != 0) or (year_int % 400 == 0):
+            if day_int > 29:
+                return "Ошибка: некорректный день."
+        else:
+            if day_int > 28:
+                return "Ошибка: некорректный день."
+
+    # Дополнение нулями для дня и месяца
+    day = "0" + day if len(day) == 1 else day
+    month = "0" + month if len(month) == 1 else month
+
+    # Возвращает строку с датой в формате ДД.ММ.ГГГГ
+    return f"{day}.{month}.{year}"
