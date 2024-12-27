@@ -106,7 +106,7 @@ pip install pytest
 
 4. Для запуска тестов используйте следующую команду в терминале:
 
-```pytest tests/test_processing.py```
+**Например для функций из модуля `processing.py`:**  ```pytest tests/test_processing.py```
 
 5. Для запуска всех тестов используйте команду:
 
