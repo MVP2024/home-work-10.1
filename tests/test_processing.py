@@ -1,18 +1,9 @@
 import pytest
+
 from src.processing import filter_by_state, sort_by_date
 
 
-@pytest.fixture
-def sample_data():
-    return [
-        {"id": 1, "state": "EXECUTED"},
-        {"id": 2, "state": "CANCELED"},
-        {"id": 3, "state": "PENDING"},
-        {"id": 4, "state": None},
-        {"id": 5, "state": "EXECUTED"},
-    ]
-
-
+# Тестирование функции `filter_by_state`
 @pytest.mark.parametrize(
     "state, expected",
     [
@@ -58,20 +49,6 @@ def test_none_state_value():
 
 
 # Тестирование функции `sort_by_date`
-# Фикстуры для тестирования
-
-
-@pytest.fixture
-def data_sample():
-    return [
-        {"date": "2023-01-01"},
-        {"date": "2022-12-31"},
-        {"date": "2023-01-02"},
-        {"date": "2022-12-30"},
-    ]
-
-
-# Параметризация для тестов
 @pytest.mark.parametrize(
     "data, reverse, expected",
     [

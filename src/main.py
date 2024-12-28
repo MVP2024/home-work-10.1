@@ -5,7 +5,6 @@ from src.widget import get_date, mask_account_card
 
 """ Вывод всех функций. """
 if __name__ == "__main__":
-
     """Вывод замаскированного номера карты и счёта"""
     print(get_mask_card_number("7854121223455678"))
     print(get_mask_card_number("78541212234"))
