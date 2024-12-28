@@ -1,6 +1,6 @@
 import pytest
 
-from src.masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_account, get_mask_card_number  # Импортируем функции
 
 
 # Тестирование функции `get_mask_card_number`
@@ -21,8 +21,28 @@ def test_get_mask_card_number(card_number, expected):
     assert get_mask_card_number(card_number) == expected
 
 
-# Тестирование функции `get_mask_account`
-# Параметризация тестов
+# Тесты с использованием фикстур для карт
+def test_correct_card(correct_card):
+    assert get_mask_card_number(correct_card) == "1234 56** **** 5678"
+
+
+def test_short_card(short_card):
+    assert get_mask_card_number(short_card) == "Ошибка: слишком короткий номер."
+
+
+def test_long_card(long_card):
+    assert get_mask_card_number(long_card) == "Ошибка: слишком длинный номер."
+
+
+def test_invalid_card_chars(invalid_card_chars):
+    assert get_mask_card_number(invalid_card_chars) == "Ошибка: присутствуют другие символы."
+
+
+def test_empty_card(empty_card):
+    assert get_mask_card_number(empty_card) == "Ошибка: входная строка пустая."
+
+
+# Тестирование функции get_mask_account
 @pytest.mark.parametrize(
     "account_number, expected",
     [
@@ -37,3 +57,24 @@ def test_get_mask_card_number(card_number, expected):
 )
 def test_get_mask_account(account_number, expected):
     assert get_mask_account(account_number) == expected
+
+
+# Тесты с использованием фикстур для счетов
+def test_valid_account(valid_account):
+    assert get_mask_account(valid_account) == "**5678"
+
+
+def test_short_account(short_account):
+    assert get_mask_account(short_account) == "Ошибка: слишком короткий номер."
+
+
+def test_long_account(long_account):
+    assert get_mask_account(long_account) == "Ошибка: слишком длинный номер."
+
+
+def test_invalid_account_chars(invalid_account_chars):
+    assert get_mask_account(invalid_account_chars) == "Ошибка: присутствуют другие символы."
+
+
+def test_empty_account(empty_account):
+    assert get_mask_account(empty_account) == "Ошибка: входная строка пустая."
