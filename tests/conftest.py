@@ -163,6 +163,20 @@ def invalid_characters():
 def transactions():
     return [
         {"operationAmount": {"amount": "100", "currency": {"code": "USD"}}},
-        {"operationAmount": {"amount": "200", "currency": {"code": "EUR"}}},
-        {"operationAmount": {"amount": "300", "currency": {"code": "USD"}}},
+        {"operationAmount": {"amount": "200", "currency": {"code": "RUB"}}},
+        {"operationAmount": {"amount": "300", "currency": {"code": " BTC"}}},
+    ]
+
+
+@pytest.fixture
+def empty_transactions():
+    return []
+
+
+@pytest.fixture
+def no_matching_currency_transactions():
+    return [
+        {'amount': 300, 'currency': 'USD'},
+        {'amount': 100, 'currency': 'RUB'},
+        {'amount': 200, 'currency': 'BTC'},
     ]
