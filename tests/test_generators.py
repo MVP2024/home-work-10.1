@@ -1,11 +1,10 @@
 import pytest
 
 
-from src.generators import filter_by_currency
+from src.generators import filter_by_currency, transaction_descriptions
 
 
 # Тесты с параметризацией функции filter_by_currency
-# Тесты с параметризацией
 @pytest.mark.parametrize("currency, expected_ids", [
     ("USD", [1, 3]),  # Ожидаем, что вернутся транзакции с id 1 и 3
     ("RUB", [2]),     # Ожидаем, что вернется транзакция с id 2
@@ -46,3 +45,28 @@ def test_no_matching_currency():
         }
     ]
     assert list(filter_by_currency(transactions, "USD")) == []
+
+
+# Тесты с параметризацией функции - генератора transaction_descriptions
+@pytest.mark.parametrize("transactions_1, expected", [
+    ([
+        {"description": "Перевод организации"},
+        {"description": "Перевод со счета на счет"},
+        {"description": "Перевод с карты на карту"},
+        {"description": "Оплата"},
+        {"description": "Оплата не прошла"},
+    ], [
+        "Перевод организации",
+        "Перевод со счета на счет",
+        "Перевод с карты на карту",
+        "Оплата",
+        "Оплата не прошла"
+    ]),
+    ([], []),    # Тест для пустого списка
+    ([{"description": "Неизвестная операция"}], ["Неизвестная операция"]),
+    # Тест для одной неизвестной операции
+    ([{}], ["Неизвестная транзакция"]),    # Тест дял пустого словаря
+])
+def test_transaction_descriptions(transactions_1, expected):
+    descriptions = list(transaction_descriptions(transactions_1))
+    assert descriptions == expected
