@@ -1,7 +1,7 @@
 import pytest
 
 
-from src.generators import filter_by_currency, transaction_descriptions
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
 
 # Тесты с параметризацией функции filter_by_currency
@@ -131,3 +131,55 @@ def test_empty_transactions():
 def test_transaction_descriptions(transactions_1, expected):
     descriptions = list(transaction_descriptions(transactions_1))
     assert descriptions == expected
+
+
+@pytest.mark.parametrize("start, end, expected", [
+    (1000, 1005, [
+        "0000 0000 0000 1000",
+        "0000 0000 0000 1001",
+        "0000 0000 0000 1002",
+        "0000 0000 0000 1003",
+        "0000 0000 0000 1004",
+        "0000 0000 0000 1005"
+    ]),
+    (2000, 2002, [
+        "0000 0000 0000 2000",
+        "0000 0000 0000 2001",
+        "0000 0000 0000 2002",
+    ]),
+])
+def test_card_number_generator(start, end, expected):
+    """Тестирует генератор номеров карт на корректность выдачи номеров."""
+    generated_numbers = list(card_number_generator(start, end))
+    assert generated_numbers == expected
+
+
+def test_card_number_generator_edge_cases():
+    """Тестирует крайние значения диапазона."""
+    # Изменим диапазон на 0 и 5 для тестирования
+    start, end = 0, 5
+    generated_numbers = list(card_number_generator(start, end))
+
+    # Проверяем, что длина сгенерированных номеров соответствует ожидаемой
+    assert len(generated_numbers) == (end - start + 1)
+
+    # Проверяем, что сгенерированные номера соответствуют ожидаемым значениям
+    expected_numbers = []
+    for i in range(start, end + 1):
+        card_number = str(i)
+        while len(card_number) < 16:
+            card_number = '0' + card_number
+        formatted_number = f"{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}"
+        expected_numbers.append(formatted_number)
+
+    assert generated_numbers == expected_numbers
+
+
+def test_card_number_format():
+    """Проверяет форматирование номеров карт."""
+    start, end = 1000, 1005
+    for number in card_number_generator(start, end):
+        parts = number.split(" ")
+        assert len(parts) == 4
+        for part in parts:
+            assert len(part) == 4
