@@ -100,6 +100,7 @@ def test_filter_by_currency_1():
     result = list(filter_by_currency(transactions, "JPY"))
     assert len(result) == 0
 
+
 def test_empty_transactions():
     """Тестирование функции с пустым списком транзакций."""
     transactions = []
