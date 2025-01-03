@@ -1,5 +1,5 @@
 from src.data import data, transactions
-from src.generators import filter_by_currency, transaction_descriptions
+from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.widget import get_date, mask_account_card
@@ -46,7 +46,12 @@ print(filter_by_state(data, "CANCELED"))
 print(sort_by_date(data, True))
 
 """Вызов функции - генератора filter_by_currency"""
-usd_transactions = filter_by_currency(transactions, "USD")
+usd_transactions = list(filter_by_currency(transactions, "USD"))
+"""Вывод отфильтрованных транзакций"""
+for transaction in usd_transactions:
+    print(transaction)
+
+usd_transactions = list(filter_by_currency(transactions, "RUB"))
 """Вывод отфильтрованных транзакций"""
 for transaction in usd_transactions:
     print(transaction)
@@ -55,3 +60,7 @@ for transaction in usd_transactions:
 descriptions = transaction_descriptions(transactions)
 for _ in range(2):  # Печатаем 2 описания
     print(next(descriptions))
+
+"""Вызов функции - генератора для создания номеров банковских карт"""
+for card_number in card_number_generator(10, 22):
+    print(card_number)
