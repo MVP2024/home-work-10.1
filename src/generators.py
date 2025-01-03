@@ -1,6 +1,8 @@
-from typing import List, Dict, Iterator, Any
+from typing import List, Dict, Iterator
 
-def filter_by_currency(transactions: List[Dict[str, Dict[str, str]]], currency: str) -> Iterator[Dict[str, Dict[str, str]]]:
+
+def filter_by_currency(transactions: List[Dict[str, Dict[str, str]]], currency: str) -> (
+        Iterator)[Dict[str, Dict[str, str]]]:
     """
     Функция возвращает итератор, который поочередно выдает транзакции,
     где валюта операции соответствует заданной.
@@ -20,5 +22,5 @@ def transaction_descriptions(transactions: List[Dict[str, Dict[str, str]]]) -> s
 
     for transaction in transactions:
         # Извлекаем описание транзакций
-        description = transaction.get("description", "Неизвестная операция")
+        description = transaction.get("description", "Неизвестная транзакция")
         yield description
