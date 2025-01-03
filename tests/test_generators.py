@@ -47,6 +47,66 @@ def test_no_matching_currency():
     assert list(filter_by_currency(transactions, "USD")) == []
 
 
+def test_filter_by_currency_1():
+    """Тестирование функции фильтрации транзакций по валюте."""
+    transactions = [
+        {
+            "operationAmount": {
+                "amount": "100.00",
+                "currency": {"code": "USD"}
+            },
+            "description": "Transaction 1"
+        },
+        {
+            "operationAmount": {
+                "amount": "200.00",
+                "currency": {"code": "EUR"}
+            },
+            "description": "Transaction 2"
+        },
+        {
+            "operationAmount": {
+                "amount": "150.00",
+                "currency": {"code": "USD"}
+            },
+            "description": "Transaction 3"
+        },
+        {
+            "operationAmount": {
+                "amount": "300.00",
+                "currency": {"code": "GBP"}
+            },
+            "description": "Transaction 4"
+        }
+    ]
+
+    # Тестируем фильтрацию по USD
+    result = list(filter_by_currency(transactions, "USD"))
+    assert len(result) == 2
+    assert result[0]["description"] == "Transaction 1"
+    assert result[1]["description"] == "Transaction 3"
+
+    # Тестируем фильтрацию по EUR
+    result = list(filter_by_currency(transactions, "EUR"))
+    assert len(result) == 1
+    assert result[0]["description"] == "Transaction 2"
+
+    # Тестируем фильтрацию по GBP
+    result = list(filter_by_currency(transactions, "GBP"))
+    assert len(result) == 1
+    assert result[0]["description"] == "Transaction 4"
+
+    # Тестируем фильтрацию по несуществующей валюте
+    result = list(filter_by_currency(transactions, "JPY"))
+    assert len(result) == 0
+
+def test_empty_transactions():
+    """Тестирование функции с пустым списком транзакций."""
+    transactions = []
+    result = list(filter_by_currency(transactions, "USD"))
+    assert result == []
+
+
 # Тесты с параметризацией функции - генератора transaction_descriptions
 @pytest.mark.parametrize("transactions_1, expected", [
     ([
