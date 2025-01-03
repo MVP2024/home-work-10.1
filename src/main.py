@@ -46,12 +46,12 @@ print(filter_by_state(data, "CANCELED"))
 print(sort_by_date(data, True))
 
 """Вызов функции - генератора filter_by_currency"""
-usd_transactions = list(filter_by_currency(transactions, "USD"))
+usd_transactions = filter_by_currency(transactions, "USD")
 """Вывод отфильтрованных транзакций"""
 for transaction in usd_transactions:
     print(transaction)
 
-usd_transactions = list(filter_by_currency(transactions, "RUB"))
+usd_transactions = filter_by_currency(transactions, "RUB")
 """Вывод отфильтрованных транзакций"""
 for transaction in usd_transactions:
     print(transaction)
