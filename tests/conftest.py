@@ -156,3 +156,70 @@ def invalid_day():
 @pytest.fixture
 def invalid_characters():
     return "2023-03-1aT12:30:00"  # Неверные символы в дате
+
+
+# Фикстуры для тестирования транзакций
+@pytest.fixture
+def transactions():
+    return [
+        {
+            "id": 1,
+            "operationAmount": {
+                "amount": "100.00",
+                "currency": {
+                    "code": "USD"
+                }
+            }
+        },
+        {
+            "id": 2,
+            "operationAmount": {
+                "amount": "200.00",
+                "currency": {
+                    "code": "RUB"
+                }
+            }
+        },
+        {
+            "id": 3,
+            "operationAmount": {
+                "amount": "150.00",
+                "currency": {
+                    "code": "USD"
+                }
+            }
+        },
+        {
+            "id": 4,
+            "operationAmount": {
+                "amount": "250.00",
+                "currency": {
+                    "code": "BTC"
+                }
+            }
+        }
+    ]
+
+
+# Фикстуры для тестирования описания каждой транзакции
+@pytest.fixture
+def transactions_1():
+    return [
+        {"description": "Перевод со счета на счет"},
+        {"description": "Перевод организации"},
+        {"description": "Перевод с карты на карту"},
+        {"description": "Оплата"},
+        {"description": "Оплата не прошла"},
+        {"description": "Неизвестная операция"},
+    ]
+
+
+@pytest.fixture
+def empty_transactions():
+    return []
+
+
+# Фикстуры для тестирования генерации номеров карт
+@pytest.fixture
+def card_range():
+    return 1000, 1005

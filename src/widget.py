@@ -1,7 +1,7 @@
 from typing import Any, Union
 
 
-def mask_account_card(types_requisites: Union[str]) -> str | ValueError | Any:
+def mask_account_card(types_requisites: Union[str]) -> str:
     """Функция принимает на вход вид и номер карты или счёта с номером"""
 
     # Проверка на пустую строку
