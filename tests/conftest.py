@@ -159,7 +159,6 @@ def invalid_characters():
 
 
 # Фикстуры для тестирования транзакций
-# Фикстуры
 @pytest.fixture
 def transactions():
     return [
@@ -200,3 +199,21 @@ def transactions():
             }
         }
     ]
+
+
+# Фикстуры для тестирования описания каждой транзакции
+@pytest.fixture
+def transactions_1():
+    return [
+        {"description": "Перевод со счета на счет"},
+        {"description": "Перевод организации"},
+        {"description": "Перевод с карты на карту"},
+        {"description": "Оплата"},
+        {"description": "Оплата не прошла"},
+        {"description": "Неизвестная операция"},
+    ]
+
+
+@pytest.fixture
+def empty_transactions():
+    return []
