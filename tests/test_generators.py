@@ -133,7 +133,7 @@ def test_transaction_descriptions(transactions_1, expected):
     assert descriptions == expected
 
 
-@pytest.mark.parametrize("start, end, expected", [
+@pytest.mark.parametrize("start, stop, expected", [
     (1000, 1005, [
         "0000 0000 0000 1000",
         "0000 0000 0000 1001",
@@ -148,24 +148,24 @@ def test_transaction_descriptions(transactions_1, expected):
         "0000 0000 0000 2002",
     ]),
 ])
-def test_card_number_generator(start, end, expected):
+def test_card_number_generator(start, stop, expected):
     """Тестирует генератор номеров карт на корректность выдачи номеров."""
-    generated_numbers = list(card_number_generator(start, end))
+    generated_numbers = list(card_number_generator(start, stop))
     assert generated_numbers == expected
 
 
 def test_card_number_generator_edge_cases():
     """Тестирует крайние значения диапазона."""
     # Изменим диапазон на 0 и 5 для тестирования
-    start, end = 0, 5
-    generated_numbers = list(card_number_generator(start, end))
+    start, stop = 0, 5
+    generated_numbers = list(card_number_generator(start, stop))
 
     # Проверяем, что длина сгенерированных номеров соответствует ожидаемой
-    assert len(generated_numbers) == (end - start + 1)
+    assert len(generated_numbers) == (stop - start + 1)
 
     # Проверяем, что сгенерированные номера соответствуют ожидаемым значениям
     expected_numbers = []
-    for i in range(start, end + 1):
+    for i in range(start, stop + 1):
         card_number = str(i)
         while len(card_number) < 16:
             card_number = '0' + card_number
@@ -177,8 +177,8 @@ def test_card_number_generator_edge_cases():
 
 def test_card_number_format():
     """Проверяет форматирование номеров карт."""
-    start, end = 1000, 1005
-    for number in card_number_generator(start, end):
+    start, stop = 1000, 1005
+    for number in card_number_generator(start, stop):
         parts = number.split(" ")
         assert len(parts) == 4
         for part in parts:

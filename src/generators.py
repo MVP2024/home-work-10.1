@@ -24,9 +24,9 @@ def transaction_descriptions(transactions: List[Dict[str, Any]]) -> Iterator[str
         yield description
 
 
-def card_number_generator(start: int, end: int):
+def card_number_generator(start: int, stop: int):
     """Генератор для создания номеров банковских карт в формате XXXX XXXX XXXX XXXX."""
-    for number in range(start, end + 1):
+    for number in range(start, stop + 1):
         # Преобразуем число в строку
         card_number = str(number)
         # Дополняем нуями слева до 16 символов
