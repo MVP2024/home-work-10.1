@@ -1,5 +1,5 @@
 from src.data import data, transactions
-from src.generators import filter_by_currency
+from src.generators import filter_by_currency, transaction_descriptions
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.widget import get_date, mask_account_card
@@ -45,8 +45,13 @@ print(filter_by_state(data, "CANCELED"))
 """Вывод списка по date отсортированного (по-умолчанию) на убывание"""
 print(sort_by_date(data, True))
 
-"""Вызов функции filter_by_currency"""
+"""Вызов функции - генератора filter_by_currency"""
 usd_transactions = filter_by_currency(transactions, "USD")
 """Вывод отфильтрованных транзакций"""
 for transaction in usd_transactions:
     print(transaction)
+
+"""Вызов функции - генератора transaction_descriptions"""
+descriptions = transaction_descriptions(transactions)
+for _ in range(2):  # Печатаем 2 описания
+    print(next(descriptions))
