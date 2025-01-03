@@ -217,3 +217,9 @@ def transactions_1():
 @pytest.fixture
 def empty_transactions():
     return []
+
+
+# Фикстуры для тестирования генерации номеров карт
+@pytest.fixture
+def card_range():
+    return 1000, 1005
