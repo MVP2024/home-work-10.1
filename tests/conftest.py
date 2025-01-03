@@ -159,24 +159,44 @@ def invalid_characters():
 
 
 # Фикстуры для тестирования транзакций
+# Фикстуры
 @pytest.fixture
 def transactions():
     return [
-        {"operationAmount": {"amount": "100", "currency": {"code": "USD"}}},
-        {"operationAmount": {"amount": "200", "currency": {"code": "RUB"}}},
-        {"operationAmount": {"amount": "300", "currency": {"code": " BTC"}}},
-    ]
-
-
-@pytest.fixture
-def empty_transactions():
-    return []
-
-
-@pytest.fixture
-def no_matching_currency_transactions():
-    return [
-        {'amount': 300, 'currency': 'USD'},
-        {'amount': 100, 'currency': 'RUB'},
-        {'amount': 200, 'currency': 'BTC'},
+        {
+            "id": 1,
+            "operationAmount": {
+                "amount": "100.00",
+                "currency": {
+                    "code": "USD"
+                }
+            }
+        },
+        {
+            "id": 2,
+            "operationAmount": {
+                "amount": "200.00",
+                "currency": {
+                    "code": "RUB"
+                }
+            }
+        },
+        {
+            "id": 3,
+            "operationAmount": {
+                "amount": "150.00",
+                "currency": {
+                    "code": "USD"
+                }
+            }
+        },
+        {
+            "id": 4,
+            "operationAmount": {
+                "amount": "250.00",
+                "currency": {
+                    "code": "BTC"
+                }
+            }
+        }
     ]
