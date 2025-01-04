@@ -156,7 +156,6 @@ def test_invalid_time_characters():
     assert get_date("2023-03-XXT12:00:XX") == "Ошибка: дата содержит недопустимые символы."
 
 
-
 def test_valid_date_with_seconds():
     assert get_date("2023-03-15T12:30:45") == "15.03.2023"
 

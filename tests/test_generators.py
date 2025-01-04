@@ -1,7 +1,6 @@
 import pytest
 
-
-from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
+from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
 
 # Тестирование функции filter_by_currency
@@ -21,6 +20,7 @@ def test_filter_by_currency(transactions, currency, expected_ids):
 # Тест для пустого списка
 def test_empty_list():
     assert list(filter_by_currency([], "USD")) == []
+
 
 # Тест для проверки длины списка
 def test_transactions(transactions):
@@ -85,7 +85,7 @@ def test_filter_by_currency_1():
         }
     ]
 
-    # Тестируем фильтрацию по USD
+# Тестируем фильтрацию по USD
     result = list(filter_by_currency(transactions, "USD"))
     assert len(result) == 2
     assert result[0]["description"] == "Transaction 1"
@@ -106,7 +106,7 @@ def test_filter_by_currency_1():
     assert len(result) == 0
 
 
-    # Тестируем с некорректными данными
+# Тестируем с некорректными данными
 def test_incorrect_data():
     transactions = [
         {"id": 1, "operationAmount": {"amount": "100.00", "currency": {}}},
@@ -116,6 +116,7 @@ def test_incorrect_data():
     ]
     filtered_transactions = list(filter_by_currency(transactions, "USD"))
     assert filtered_transactions == []  # Ожидаем, что не будет транзакций с USD
+
 
 # Тесты с параметризацией функции - генератора transaction_descriptions
 @pytest.mark.parametrize("transactions_1, expected", [
@@ -194,8 +195,6 @@ def test_card_number_format():
             assert len(part) == 4
 
 
-
-
 # Предполагаем, что функция card_number_generator уже определена
 @pytest.mark.parametrize("start, stop", [
     (5, 1),
@@ -203,6 +202,7 @@ def test_card_number_format():
 def test_card_number_generator_invalid_range(start, stop):
     with pytest.raises(ValueError, match="значение start должно быть меньше или равно значению stop"):
         list(card_number_generator(start, stop))
+
 
 @pytest.mark.parametrize("start, stop", [
     (-1, 5),
@@ -212,6 +212,7 @@ def test_card_number_generator_negative_values(start, stop):
     with pytest.raises(ValueError, match="start и stop не должны быть отрицательными числами"):
         list(card_number_generator(start, stop))
 
+
 @pytest.mark.parametrize("start, stop", [
     (1.5, 5),
     (1, "5"),
@@ -219,6 +220,7 @@ def test_card_number_generator_negative_values(start, stop):
 def test_card_number_generator_non_integer_values(start, stop):
     with pytest.raises(TypeError, match="start и stop должны быть целыми числами"):
         list(card_number_generator(start, stop))
+
 
 @pytest.mark.parametrize("start, stop, expected", [
     (0, 5, [

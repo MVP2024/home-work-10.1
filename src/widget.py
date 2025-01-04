@@ -83,7 +83,9 @@ def get_date(data_full: Union[str]) -> str | ValueError | Any:
 
     # Разделяем дату и время
     date_part = data_full.split("T")[0]
-    time_part = data_full.split("T")[1] if len(data_full.split("T")) > 1 else ""
+
+    # это для необходимости ввести время в код
+    # time_part = data_full.split("T")[1] if len(data_full.split("T")) > 1 else ""
 
     # Проверка на наличие недопустимых символов в дате
     if not all(c.isdigit() or c == '-' for c in date_part):

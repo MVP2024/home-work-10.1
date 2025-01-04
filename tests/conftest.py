@@ -112,7 +112,6 @@ def valid_date():
     return "20-03-2020T12:30:00"  # Корректная дата
 
 
-
 # Фикстуры для тестирования транзакций
 @pytest.fixture
 def transactions():
@@ -179,9 +178,11 @@ def empty_transactions():
 def valid_range():
     return (1, 5)
 
+
 @pytest.fixture
 def negative_values():
     return [(-1, 5), (0, -5)]
+
 
 @pytest.fixture
 def non_integer_values():
