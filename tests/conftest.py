@@ -1,6 +1,11 @@
 import pytest
 
 
+# Запуск тестов
+if __name__ == "__main__":
+    pytest.main()
+
+
 # Фикстуры для тестирования номера карты
 @pytest.fixture
 def correct_card():

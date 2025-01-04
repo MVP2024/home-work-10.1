@@ -4,6 +4,12 @@ import pytest
 from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
 
 
+# Запуск тестов
+if __name__ == "__main__":
+    pytest.main()
+
+
+# Тестирование функции filter_by_currency
 # Тесты с параметризацией функции filter_by_currency
 @pytest.mark.parametrize("currency, expected_ids", [
     ("USD", [1, 3]),  # Ожидаем, что вернутся транзакции с id 1 и 3
@@ -22,7 +28,7 @@ def test_empty_list():
     assert list(filter_by_currency([], "USD")) == []
 
 
-# Тест для списка без соответствующих валютных операций
+# Тест для списка без соответствующих транзакций с заданной валютой
 def test_no_matching_currency():
     transactions = [
         {
@@ -48,7 +54,7 @@ def test_no_matching_currency():
 
 
 def test_filter_by_currency_1():
-    """Тестирование функции фильтрации транзакций по валюте."""
+    """Тестирование функции фильтрации транзакций по существующей валюте."""
     transactions = [
         {
             "operationAmount": {
@@ -107,6 +113,16 @@ def test_empty_transactions():
     result = list(filter_by_currency(transactions, "USD"))
     assert result == []
 
+    # Тестируем с некорректными данными
+def test_incorrect_data():
+    transactions = [
+        {"id": 1, "operationAmount": {"amount": "100.00", "currency": {}}},
+        {"id": 2, "operationAmount": {"amount": "200.00", "currency": {"code": "RUB"}}},
+        {"id": 3},  # Отсутствует ключ operationAmount
+        {"id": 4, "operationAmount": {"amount": "150.00"}}  # Отсутствует информация о валюте
+    ]
+    filtered_transactions = list(filter_by_currency(transactions, "USD"))
+    assert filtered_transactions == []  # Ожидаем, что не будет транзакций с USD
 
 # Тесты с параметризацией функции - генератора transaction_descriptions
 @pytest.mark.parametrize("transactions_1, expected", [

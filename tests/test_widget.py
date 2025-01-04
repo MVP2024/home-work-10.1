@@ -3,6 +3,11 @@ import pytest
 from src.widget import get_date, mask_account_card
 
 
+# Запуск тестов
+if __name__ == "__main__":
+    pytest.main()
+
+
 # Тестирование функции mask_account_card
 # Параметризация тестов для mask_account_card
 @pytest.mark.parametrize(
