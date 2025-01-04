@@ -44,6 +44,6 @@ def card_number_generator(start, stop):
         card_number = str(number)
         # Дополняем нулями слева до 16 символов
         while len(card_number) < 16:
-            card_number = '0' + card_number
+            card_number = "0" + card_number
         # Форматируем строку в нужном виде
         yield f"{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}"

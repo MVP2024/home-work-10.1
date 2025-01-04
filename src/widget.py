@@ -78,7 +78,7 @@ def get_date(data_full: Union[str]) -> str | ValueError | Any:
         return "Ошибка: неверный формат даты."
 
     # Проверка на наличие недопустимых символов в полной строке
-    if not all(c.isdigit() or c in ['-', 'T', ':', 'X'] for c in data_full):
+    if not all(c.isdigit() or c in ["-", "T", ":", "X"] for c in data_full):
         return "Ошибка: дата содержит недопустимые символы."
 
     # Разделяем дату и время
@@ -88,7 +88,7 @@ def get_date(data_full: Union[str]) -> str | ValueError | Any:
     # time_part = data_full.split("T")[1] if len(data_full.split("T")) > 1 else ""
 
     # Проверка на наличие недопустимых символов в дате
-    if not all(c.isdigit() or c == '-' for c in date_part):
+    if not all(c.isdigit() or c == "-" for c in date_part):
         return "Ошибка: дата содержит недопустимые символы."
 
     date_list = date_part.split("-")

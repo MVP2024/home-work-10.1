@@ -116,42 +116,10 @@ def valid_date():
 @pytest.fixture
 def transactions():
     return [
-        {
-            "id": 1,
-            "operationAmount": {
-                "amount": "100.00",
-                "currency": {
-                    "code": "USD"
-                }
-            }
-        },
-        {
-            "id": 2,
-            "operationAmount": {
-                "amount": "200.00",
-                "currency": {
-                    "code": "RUB"
-                }
-            }
-        },
-        {
-            "id": 3,
-            "operationAmount": {
-                "amount": "150.00",
-                "currency": {
-                    "code": "USD"
-                }
-            }
-        },
-        {
-            "id": 4,
-            "operationAmount": {
-                "amount": "250.00",
-                "currency": {
-                    "code": "BTC"
-                }
-            }
-        }
+        {"id": 1, "operationAmount": {"amount": "100.00", "currency": {"code": "USD"}}},
+        {"id": 2, "operationAmount": {"amount": "200.00", "currency": {"code": "RUB"}}},
+        {"id": 3, "operationAmount": {"amount": "150.00", "currency": {"code": "USD"}}},
+        {"id": 4, "operationAmount": {"amount": "250.00", "currency": {"code": "BTC"}}},
     ]
 
 
