@@ -62,5 +62,5 @@ for _ in range(2):  # Печатаем 2 описания
     print(next(descriptions))
 
 """Вызов функции - генератора для создания номеров банковских карт"""
-for card_number in card_number_generator(10, 22):
+for card_number in card_number_generator(12, 16):
     print(card_number)
