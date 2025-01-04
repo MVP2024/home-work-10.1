@@ -176,7 +176,10 @@ pip install pytest
 `pytest --cov=src --cov-report=html`  — ```чтобы сгенерировать отчет о покрытии в HTML-формате```
 
 7. Для проверки какие тесты пропущены введите команду:
-`pytest --cov=src --cov-report=term-missing`
+`pytest --cov=src --cov-report=term-missing`  - src это модуль в котором мы ищем пропуски.
+
+8. Для проверки какие тесты пропущены в папке tests.
+`pytest --cov=tests --cov-report=term-missing` - tests это модуль, в котором мы ищем пропуски.
 
 
 *Примеры тестов*
