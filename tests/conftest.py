@@ -65,17 +65,6 @@ def sample_data():
     ]
 
 
-# Фикстуры для тестирования `date`
-@pytest.fixture
-def data_sample():
-    return [
-        {"date": "2023-01-01"},
-        {"date": "2022-12-31"},
-        {"date": "2023-01-02"},
-        {"date": "2022-12-30"},
-    ]
-
-
 # Фикстуры для тестирования карт
 @pytest.fixture
 def valid_visa_card():
@@ -120,84 +109,17 @@ def no_type_card():
 # Фикстуры для тестирования дат
 @pytest.fixture
 def valid_date():
-    return "2023-03-15T12:30:00"  # Корректная дата
-
-
-@pytest.fixture
-def leap_year_date():
-    return "2020-02-29T15:45:00"  # Корректная дата високосного года
-
-
-@pytest.fixture
-def invalid_date_format():
-    return "2023/03/15 12:30:00"  # Неверный формат даты
-
-
-@pytest.fixture
-def empty_date():
-    return ""  # Пустая строка
-
-
-@pytest.fixture
-def no_time_part():
-    return "2023-03-15"  # Нет времени
-
-
-@pytest.fixture
-def invalid_month():
-    return "2023-13-15T12:30:00"  # Некорректный месяц
-
-
-@pytest.fixture
-def invalid_day():
-    return "2023-04-31T12:30:00"  # Некорректный день
-
-
-@pytest.fixture
-def invalid_characters():
-    return "2023-03-1aT12:30:00"  # Неверные символы в дате
+    return "20-03-2020T12:30:00"  # Корректная дата
 
 
 # Фикстуры для тестирования транзакций
 @pytest.fixture
 def transactions():
     return [
-        {
-            "id": 1,
-            "operationAmount": {
-                "amount": "100.00",
-                "currency": {
-                    "code": "USD"
-                }
-            }
-        },
-        {
-            "id": 2,
-            "operationAmount": {
-                "amount": "200.00",
-                "currency": {
-                    "code": "RUB"
-                }
-            }
-        },
-        {
-            "id": 3,
-            "operationAmount": {
-                "amount": "150.00",
-                "currency": {
-                    "code": "USD"
-                }
-            }
-        },
-        {
-            "id": 4,
-            "operationAmount": {
-                "amount": "250.00",
-                "currency": {
-                    "code": "BTC"
-                }
-            }
-        }
+        {"id": 1, "operationAmount": {"amount": "100.00", "currency": {"code": "USD"}}},
+        {"id": 2, "operationAmount": {"amount": "200.00", "currency": {"code": "RUB"}}},
+        {"id": 3, "operationAmount": {"amount": "150.00", "currency": {"code": "USD"}}},
+        {"id": 4, "operationAmount": {"amount": "250.00", "currency": {"code": "BTC"}}},
     ]
 
 
@@ -221,5 +143,15 @@ def empty_transactions():
 
 # Фикстуры для тестирования генерации номеров карт
 @pytest.fixture
-def card_range():
-    return 1000, 1005
+def valid_range():
+    return (1, 5)
+
+
+@pytest.fixture
+def negative_values():
+    return [(-1, 5), (0, -5)]
+
+
+@pytest.fixture
+def non_integer_values():
+    return [(1.5, 5), (1, "5")]
