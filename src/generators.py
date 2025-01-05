@@ -21,7 +21,6 @@ def transaction_descriptions(transactions: List[Dict[str, Any]]) -> Iterator[str
     for transaction in transactions:
         # Извлекаем описание транзакций
         description = transaction.get("description", "Неизвестная транзакция")
-        print("Выполненная операция: ")
         yield description
 
 
@@ -47,4 +46,4 @@ def card_number_generator(start, stop):
         while len(card_number) < 16:
             card_number = "0" + card_number
         # Форматируем строку в нужном виде
-        yield f"Номер карты:\t{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}"
+        yield f"{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}"
