@@ -8,7 +8,8 @@ def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:
     """Декоратор для логирования вызовов функций с задержкой
 
     Аргументы:
-        filename: Имя файла для записи логов. Если (Нет)None, выводит в консоль.
+    filename: Имя файла для записи логов. Если (Нет)None, выводит в консоль.
+    time_delay: задержка времени по-умолчанию = 0
     """
 
     def write_log(information: str) -> None:

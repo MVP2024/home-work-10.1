@@ -148,7 +148,6 @@ def non_integer_values():
 
 
 # Фикстура для тестирования декоратора log
-# Пример функций для тестирования
 @log()
 def add(a, b):
     return a + b
