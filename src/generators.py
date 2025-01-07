@@ -19,6 +19,7 @@ def filter_by_currency(transactions: List[Dict[str, Any]], currency: str) -> Ite
             yield transaction
 
 
+@log()
 @log("mylog.txt")
 def transaction_descriptions(transactions: List[Dict[str, Any]]) -> Iterator[str]:
     """Генератор, который принимает список транзакций и возвращает описание каждой операции."""
@@ -28,6 +29,7 @@ def transaction_descriptions(transactions: List[Dict[str, Any]]) -> Iterator[str
         yield description
 
 
+@log()
 @log("mylog.txt")
 def card_number_generator(start, stop):
     """Генератор для создания номеров банковских карт в формате XXXX XXXX XXXX XXXX."""
