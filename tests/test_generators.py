@@ -112,45 +112,59 @@ def test_transaction_descriptions(transactions_1, expected):
     assert descriptions == expected
 
 
-import pytest
-
 # Предполагаем, что функция card_number_generator уже определена
-
 @pytest.mark.parametrize(
     "start, stop, expected",
     [
-        (1000, 1005, [
-            "0000 0000 0000 1000",
-            "0000 0000 0000 1001",
-            "0000 0000 0000 1002",
-            "0000 0000 0000 1003",
-            "0000 0000 0000 1004",
-            "0000 0000 0000 1005",
-        ]),
-        (2000, 2002, [
-            "0000 0000 0000 2000",
-            "0000 0000 0000 2001",
-            "0000 0000 0000 2002",
-        ]),
-        (0, 5, [
-            "0000 0000 0000 0000",
-            "0000 0000 0000 0001",
-            "0000 0000 0000 0002",
-            "0000 0000 0000 0003",
-            "0000 0000 0000 0004",
-            "0000 0000 0000 0005",
-        ]),
-        (1, 3, [
-            "0000 0000 0000 0001",
-            "0000 0000 0000 0002",
-            "0000 0000 0000 0003",
-        ]),
+        (
+            1000,
+            1005,
+            [
+                "0000 0000 0000 1000",
+                "0000 0000 0000 1001",
+                "0000 0000 0000 1002",
+                "0000 0000 0000 1003",
+                "0000 0000 0000 1004",
+                "0000 0000 0000 1005",
+            ],
+        ),
+        (
+            2000,
+            2002,
+            [
+                "0000 0000 0000 2000",
+                "0000 0000 0000 2001",
+                "0000 0000 0000 2002",
+            ],
+        ),
+        (
+            0,
+            5,
+            [
+                "0000 0000 0000 0000",
+                "0000 0000 0000 0001",
+                "0000 0000 0000 0002",
+                "0000 0000 0000 0003",
+                "0000 0000 0000 0004",
+                "0000 0000 0000 0005",
+            ],
+        ),
+        (
+            1,
+            3,
+            [
+                "0000 0000 0000 0001",
+                "0000 0000 0000 0002",
+                "0000 0000 0000 0003",
+            ],
+        ),
     ],
 )
 def test_card_number_generator(start, stop, expected):
     """Тестирует генератор номеров карт на корректность выдачи номеров."""
     generated_numbers = list(card_number_generator(start, stop))
     assert generated_numbers == expected
+
 
 def test_card_number_generator_edge_cases():
     """Тестирует крайние значения диапазона."""
@@ -171,6 +185,7 @@ def test_card_number_generator_edge_cases():
 
     assert generated_numbers == expected_numbers
 
+
 def test_card_number_format():
     """Проверяет форматирование номеров карт."""
     start, stop = 1000, 1005
@@ -180,15 +195,18 @@ def test_card_number_format():
         for part in parts:
             assert len(part) == 4
 
+
 @pytest.mark.parametrize("start, stop", [(5, 1)])
 def test_card_number_generator_invalid_range(start, stop):
     with pytest.raises(ValueError, match="значение start должно быть меньше или равно значению stop"):
         list(card_number_generator(start, stop))
 
+
 @pytest.mark.parametrize("start, stop", [(-1, 5), (0, -5)])
 def test_card_number_generator_negative_values(start, stop):
     with pytest.raises(ValueError, match="start и stop не должны быть отрицательными числами"):
         list(card_number_generator(start, stop))
+
 
 @pytest.mark.parametrize("start, stop", [(1.5, 5), (1, "5")])
 def test_card_number_generator_non_integer_values(start, stop):

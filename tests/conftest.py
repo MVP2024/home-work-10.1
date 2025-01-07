@@ -142,6 +142,7 @@ def empty_transactions():
 def negative_values():
     return [(-1, 5), (0, -5)]
 
+
 @pytest.fixture
 def non_integer_values():
     return [(1.5, 5), (1, "5")]
