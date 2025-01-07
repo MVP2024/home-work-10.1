@@ -1,6 +1,9 @@
 from typing import Union
 
+from src.decorators import log
 
+
+@log("mylog.txt", 1)
 def get_mask_card_number(card_number: Union[str]) -> Union[str]:
     """Функция принимает на вход номер карты и возвращает замаскированный номер"""
 
@@ -25,6 +28,7 @@ def get_mask_card_number(card_number: Union[str]) -> Union[str]:
     return masked_card_number
 
 
+@log("mylog.txt", 1)
 def get_mask_account(account_number: Union[str]) -> Union[str, ValueError]:
     """Функция принимает на вход номер счёта и возвращает замаскированный счёт"""
 
