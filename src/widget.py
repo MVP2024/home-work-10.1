@@ -3,7 +3,7 @@ from typing import Any, Union
 from src.decorators import log
 
 
-@log("mylog.txt", 1)
+@log("mylog.txt")
 def mask_account_card(types_requisites: Union[str]) -> str:
     """Функция принимает на вход вид и номер карты или счёта с номером"""
 
@@ -68,7 +68,7 @@ def mask_account_card(types_requisites: Union[str]) -> str:
     return masked_card_number
 
 
-@log("mylog.txt", 1)
+@log("mylog.txt")
 def get_date(data_full: Union[str]) -> str | ValueError | Any:
     """Функция, которая принимает на вход строку с датой в формате "YYYY-MM-DDTHH:MM:SS" и
     возвращает дату в формате "ДД.ММ.ГГГГ".

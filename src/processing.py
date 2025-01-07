@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Union
 from src.decorators import log
 
 
-@log("mylog.txt", 1)
+@log("mylog.txt")
 def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> Union[str, List[Dict[str, Any]]]:
     """Функция, которая фильтрует список словарей по значению ключа 'state'.
 
@@ -28,7 +28,7 @@ def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> Unio
     return filtered_data
 
 
-@log("mylog.txt", 1)
+@log("mylog.txt")
 def sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
     """Сортирует список словарей по дате.
 
