@@ -1,5 +1,7 @@
 import pytest
 
+from src.decorators import log
+
 
 # Фикстуры для тестирования номера карты
 @pytest.fixture
@@ -106,12 +108,6 @@ def no_type_card():
     return "1234567812345678"  # Нет типа карты
 
 
-# Фикстуры для тестирования дат
-@pytest.fixture
-def valid_date():
-    return "20-03-2020T12:30:00"  # Корректная дата
-
-
 # Фикстуры для тестирования транзакций
 @pytest.fixture
 def transactions():
@@ -143,15 +139,26 @@ def empty_transactions():
 
 # Фикстуры для тестирования генерации номеров карт
 @pytest.fixture
-def valid_range():
-    return (1, 5)
-
-
-@pytest.fixture
 def negative_values():
     return [(-1, 5), (0, -5)]
-
 
 @pytest.fixture
 def non_integer_values():
     return [(1.5, 5), (1, "5")]
+
+
+# Фикстура для тестирования декоратора log
+# Пример функций для тестирования
+@log()
+def add(a, b):
+    return a + b
+
+
+@log()
+def divide(a, b):
+    return a / b
+
+
+@log()
+def raise_error():
+    raise ValueError("This is an error")
