@@ -112,6 +112,7 @@ def test_transaction_descriptions(transactions_1, expected):
     assert descriptions == expected
 
 
+# Предполагаем, что функция card_number_generator уже определена
 @pytest.mark.parametrize(
     "start, stop, expected",
     [
@@ -136,84 +137,6 @@ def test_transaction_descriptions(transactions_1, expected):
                 "0000 0000 0000 2002",
             ],
         ),
-    ],
-)
-def test_card_number_generator(start, stop, expected):
-    """Тестирует генератор номеров карт на корректность выдачи номеров."""
-    generated_numbers = list(card_number_generator(start, stop))
-    assert generated_numbers == expected
-
-
-def test_card_number_generator_edge_cases():
-    """Тестирует крайние значения диапазона."""
-    # Изменим диапазон на 0 и 5 для тестирования
-    start, stop = 0, 5
-    generated_numbers = list(card_number_generator(start, stop))
-
-    # Проверяем, что длина сгенерированных номеров соответствует ожидаемой
-    assert len(generated_numbers) == (stop - start + 1)
-
-    # Проверяем, что сгенерированные номера соответствуют ожидаемым значениям
-    expected_numbers = []
-    for i in range(start, stop + 1):
-        card_number = str(i)
-        while len(card_number) < 16:
-            card_number = "0" + card_number
-        formatted_number = f"{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}"
-        expected_numbers.append(formatted_number)
-
-    assert generated_numbers == expected_numbers
-
-
-def test_card_number_format():
-    """Проверяет форматирование номеров карт."""
-    start, stop = 1000, 1005
-    for number in card_number_generator(start, stop):
-        parts = number.split(" ")
-        assert len(parts) == 4
-        for part in parts:
-            assert len(part) == 4
-
-
-# Предполагаем, что функция card_number_generator уже определена
-@pytest.mark.parametrize(
-    "start, stop",
-    [
-        (5, 1),
-    ],
-)
-def test_card_number_generator_invalid_range(start, stop):
-    with pytest.raises(ValueError, match="значение start должно быть меньше или равно значению stop"):
-        list(card_number_generator(start, stop))
-
-
-@pytest.mark.parametrize(
-    "start, stop",
-    [
-        (-1, 5),
-        (0, -5),
-    ],
-)
-def test_card_number_generator_negative_values(start, stop):
-    with pytest.raises(ValueError, match="start и stop не должны быть отрицательными числами"):
-        list(card_number_generator(start, stop))
-
-
-@pytest.mark.parametrize(
-    "start, stop",
-    [
-        (1.5, 5),
-        (1, "5"),
-    ],
-)
-def test_card_number_generator_non_integer_values(start, stop):
-    with pytest.raises(TypeError, match="start и stop должны быть целыми числами"):
-        list(card_number_generator(start, stop))
-
-
-@pytest.mark.parametrize(
-    "start, stop, expected",
-    [
         (
             0,
             5,
@@ -237,6 +160,55 @@ def test_card_number_generator_non_integer_values(start, stop):
         ),
     ],
 )
-def test_card_number_generator_valid_range(start, stop, expected):
-    result = list(card_number_generator(start, stop))
-    assert result == expected
+def test_card_number_generator(start, stop, expected):
+    """Тестирует генератор номеров карт на корректность выдачи номеров."""
+    generated_numbers = list(card_number_generator(start, stop))
+    assert generated_numbers == expected
+
+
+def test_card_number_generator_edge_cases():
+    """Тестирует крайние значения диапазона."""
+    start, stop = 0, 5
+    generated_numbers = list(card_number_generator(start, stop))
+
+    # Проверяем, что длина сгенерированных номеров соответствует ожидаемой
+    assert len(generated_numbers) == (stop - start + 1)
+
+    # Проверяем, что сгенерированные номера соответствуют ожидаемым значениями
+    expected_numbers = []
+    for i in range(start, stop + 1):
+        card_number = str(i)
+        while len(card_number) < 16:
+            card_number = "0" + card_number
+        formatted_number = f"{card_number[:4]} {card_number[4:8]} {card_number[8:12]} {card_number[12:16]}"
+        expected_numbers.append(formatted_number)
+
+    assert generated_numbers == expected_numbers
+
+
+def test_card_number_format():
+    """Проверяет форматирование номеров карт."""
+    start, stop = 1000, 1005
+    for number in card_number_generator(start, stop):
+        parts = number.split(" ")
+        assert len(parts) == 4
+        for part in parts:
+            assert len(part) == 4
+
+
+@pytest.mark.parametrize("start, stop", [(5, 1)])
+def test_card_number_generator_invalid_range(start, stop):
+    with pytest.raises(ValueError, match="значение start должно быть меньше или равно значению stop"):
+        list(card_number_generator(start, stop))
+
+
+@pytest.mark.parametrize("start, stop", [(-1, 5), (0, -5)])
+def test_card_number_generator_negative_values(start, stop):
+    with pytest.raises(ValueError, match="start и stop не должны быть отрицательными числами"):
+        list(card_number_generator(start, stop))
+
+
+@pytest.mark.parametrize("start, stop", [(1.5, 5), (1, "5")])
+def test_card_number_generator_non_integer_values(start, stop):
+    with pytest.raises(TypeError, match="start и stop должны быть целыми числами"):
+        list(card_number_generator(start, stop))
