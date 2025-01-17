@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from src.decorators import log
@@ -162,3 +164,10 @@ def divide(a, b):
 @log()
 def raise_error():
     raise ValueError("This is an error")
+
+
+# Фикстура для тестирования convert_to_rub
+@pytest.fixture
+def set_api_key():
+    """Фикстура для установки тестового API-ключа."""
+    os.environ["API_KEY"] = "test_api_key"  # Установите тестовый ключ API

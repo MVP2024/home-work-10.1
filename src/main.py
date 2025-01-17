@@ -1,8 +1,17 @@
-from src.data import data, transactions
+import os
+
+from dotenv import load_dotenv
+
+from src.data_files import data, transactions
+from src.external_api import convert_to_rub
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
+from src.utils import load_transactions
 from src.widget import get_date, mask_account_card
+
+load_dotenv()
+print("Текущая рабочая директория:", os.getcwd())
 
 """ Вывод всех функций. """
 if __name__ == "__main__":
@@ -62,5 +71,25 @@ for _ in range(2):  # Печатаем 2 описания
     print(next(descriptions))
 
 """Вызов функции - генератора для создания номеров банковских карт"""
-for card_number in card_number_generator(12, 16):
+for card_number in card_number_generator(12, 14):
     print(card_number)
+
+
+"""Вызов функции для конвертации валюты"""
+if __name__ == "__main__":
+    print("Загрузка транзакций...")
+
+    # Используем относительный путь к файлу
+    transactions_json = load_transactions("../data/operations.json")
+
+    if not transactions_json:
+        print("Нет доступных транзакций для обработки.")
+    else:
+        print(f"Найдено {len(transactions_json)} транзакций.")
+        for transaction in transactions_json:
+            print(f"Обрабатываем транзакцию: {transaction}")
+            try:
+                amount_in_rub = convert_to_rub(transaction)
+                print(f"Сумма транзакции в рублях: {amount_in_rub}")
+            except ValueError as e:
+                print(f"Ошибка при конвертации: {e}")
