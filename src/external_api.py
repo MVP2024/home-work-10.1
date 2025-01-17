@@ -9,6 +9,19 @@ load_dotenv()
 
 
 def convert_to_rub(transaction: Dict[str, Any]) -> float:
+    """
+    Конвертирует сумму из указанной валюты в рубли (RUB).
+
+    :param transaction: Словарь, представляющий транзакцию, который должен содержать
+                       поле "operationAmount" и "amount" (число в виде строки)
+                       и "currency" (словарь с полем "code", указывающим код валюты).
+
+    :raises ValueError: Если транзакция не содержит поле "operationAmount".
+                        Если API не возвращает курс для RUB.
+                        Если не удается получить обменный курс.
+
+    :return: Конвертированная сумма в рублях (RUB).
+    """
     if "operationAmount" not in transaction:
         raise ValueError("Транзакция не содержит поле operationAmount.")
 
