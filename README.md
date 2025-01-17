@@ -13,8 +13,11 @@ _Данный проект представляет собой скрипт на
 - Маскировка номеров счетов и карт.
 - Генерация и фильтрация транзакций по валюте.
 - Генерация описаний транзакций.
-- Генерация номеров карт
-- 
+- Генерация номеров карт.
+- Загрузка данных из json-файла.
+- Конвертация валюты в указанную валюту.
+
+
 ***Установка***
 
 1. Установите [Python](https://www.python.org/downloads/) (рекомендуется версия 3.6 и выше).
@@ -52,9 +55,10 @@ _Принимает на вход номер карты и возвращает 
 _где видны первые 6 и последние 4 цифры._
 
 *Пример:*
-    - masked_card = get_mask_card_number("7000792289606361")
-    - print(masked_card)  # Вывод: "7000 79** **** 6361"
-
+```
+    masked_card = get_mask_card_number("7000792289606361")
+    print(masked_card)  # Вывод: "7000 79** **** 6361"
+```
 
 ***Функция***
 `get_mask_account(account_number: Union[str]) -> Union[str]`
@@ -64,9 +68,10 @@ _Принимает на вход номер счета и возвращает 
 последние 4 цифры._
 
 *Пример:*
-    - masked_account = get_mask_account("73654108430135874305")
-    - print(masked_account)  # Вывод: "**4305"
-
+```
+    masked_account = get_mask_account("73654108430135874305")
+    print(masked_account)  # Вывод: "**4305"
+```
 
 ***Функция***
 `mask_account_card(types_requisites: Union[str]) -> Union[str]`
@@ -75,9 +80,10 @@ _Принимает на вход номер счета и возвращает 
 _Принимает на вход тип и номер карты или счета и возвращает их тип и маскированный номер._
 
 *Пример:*
-    - masked_info = mask_account_card("Visa Platinum 7000792289606361")
-    - print(masked_info)  # Вывод: "Visa Platinum 7000 79** **** 6361"
-
+```
+    masked_info = mask_account_card("Visa Platinum 7000792289606361")
+    print(masked_info)  # Вывод: "Visa Platinum 7000 79** **** 6361"
+```
 
 ***Функция***
 `get_date(data_full: Union[str]) -> Union[str]`
@@ -86,9 +92,10 @@ _Принимает на вход тип и номер карты или сче�
 _Принимает на вход строку с датой в формате_ "YYYY-MM-DDTHH:MM:SS" _и возвращает строку с датой в формате_ "ДД.ММ.ГГГГ".
 
 *Пример:*
-    - formatted_date = get_date("2024-03-11T02:26:18.671407")
-    - print(formatted_date)  # Вывод: "11.03.2024"
-
+```
+    formatted_date = get_date("2024-03-11T02:26:18.671407")
+    print(formatted_date)  # Вывод: "11.03.2024"
+```
 
 ***Функция***
 `sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]`
@@ -99,9 +106,11 @@ _Принимает список словарей и необязательны�
 
 *Пример:*
 sorted_data = sort_by_date(data)
-    - Вывод [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
-    - {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
-
+### Вывод:
+```
+    [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
+    {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
+```
 
 ***Функция***
 `filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> Union[str, List[Dict[str, Any]]]`
@@ -110,10 +119,13 @@ sorted_data = sort_by_date(data)
 _Принимает список словарей и фильтрует его по состоянию state._
 
 *Пример:*
-    - filtered_data = filter_by_state(data, "EXECUTED")
-    - Вывод [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
-    - {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
+filtered_data = filter_by_state(data, "EXECUTED")
 
+### Вывод:
+```
+    [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
+    {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
+```
 
 ***Функция***
 `filter_by_currency(transactions: List[Dict[str, Any]], currency: str) -> Iterator[Dict[str, Any]]`
@@ -123,10 +135,13 @@ _Функция возвращает итератор, который пооче
 
 *Пример:*
 filtered_transactions = list(filter_by_currency(transactions, "USD"))
-    - Вывод {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572', 'operationAmount': 
-    - {'amount': '9824.07', 'currency': {'name': 'USD', 'code': 'USD'}}, 
-    - 'description': 'Перевод организации', 'from': 'Счет 75106830613657916952', 'to': 'Счет 11776614605963066702'}
 
+### Вывод: 
+```
+    {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572', 'operationAmount': 
+    {'amount': '9824.07', 'currency': {'name': 'USD', 'code': 'USD'}}, 
+    'description': 'Перевод организации', 'from': 'Счет 75106830613657916952', 'to': 'Счет 11776614605963066702'}
+```
 
 ***Функция***
 `transaction_descriptions(transactions: List[Dict[str, Any]]) -> Iterator[str]`
@@ -136,9 +151,10 @@ _Генератор, который принимает список транза
 
 *Пример:*
 descriptions = list(transaction_descriptions(transactions))
-    - Перевод организации
-    - Перевод со счета на счет
-
+```
+    Перевод организации
+    Перевод со счета на счет
+```
 
 ***Функция***
 `card_number_generator(start: int, end: int)`
@@ -148,11 +164,12 @@ _Генератор для создания номеров банковских 
 
 *Пример:*
 generated_numbers = list(card_number_generator(1000, 1003))
-    - 0000 0000 0000 1000
-    - 0000 0000 0000 1001
-    - 0000 0000 0000 1002
-    - 0000 0000 0000 1003
-
+```
+    0000 0000 0000 1000 
+    0000 0000 0000 1001
+    0000 0000 0000 1002
+    0000 0000 0000 1003
+```
 
 ***Функция - декоратор***
 `def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:`
@@ -179,9 +196,10 @@ def get_mask_account(account_number: Union[str]) -> Union[str, ValueError]:
 `get_mask_account(7854121223455678)`
 
 ### Запись в log.txt:
-- get_mask_card_number ok. Возвращаемое значение 7854 12** **** 5678. Время выполнения: 0:00:00.000140
-- Начало get_mask_card_number в 2025-01-07T19:50:28.484311  с аргументами: ('78541212234',), {}
-
+```
+get_mask_card_number ok. Возвращаемое значение 7854 12** **** 5678. Время выполнения: 0:00:00.000140
+Начало get_mask_card_number в 2025-01-07T19:50:28.484311  с аргументами: ('78541212234',), {}
+```
 
 ***Функция***
 `convert_to_rub(transaction: Dict[str, Any]) -> float`
