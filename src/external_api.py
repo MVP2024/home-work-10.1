@@ -32,26 +32,26 @@ def convert_to_rub(transaction: Dict[str, Any]) -> float:
     if currency_code == "RUB":
         return amount
 
-    # Формируем URL для запроса к API
+    # Формируем URL для запроса к API конвертации
     api_key = os.getenv("API_KEY")
-    api_url = f"https://api.apilayer.com/exchangerates_data/latest?base={currency_code}&symbols=RUB"
+    if not api_key:
+        raise ValueError("API_KEY не установлен.")
 
-    print(f"Запрос к API: {api_url}")  # Отладочное сообщение для проверки корректного url.
-
+    api_url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={currency_code}&amount={amount}"
     headers = {"apikey": api_key}
 
-    response = requests.get(api_url, headers=headers)
-    print(f"Статус код ответа: {response.status_code}")  # Отладочное сообщение для проверки кода.
-    print(f"Ответ от API: {response.text}")  # Отладочное сообщение от API.
+    try:
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()  # Вызывает исключение для плохих статусов
+    except requests.RequestException as e:
+        # Если запрос не удался, добавляем статус код в сообщение об ошибке
+        if response is not None:
+            raise ValueError(f"Не удалось получить обменный курс. Статус код: {response.status_code}") from e
+        raise ValueError("Не удалось получить обменный курс.") from e
 
-    if response.status_code == 200:
-        data = response.json()
-        if "rates" in data and "RUB" in data["rates"]:
-            rate = data["rates"]["RUB"]
-            converted_amount = amount * rate
-            print(f"Конвертированная сумма: {converted_amount} RUB")  # Полученная сумма в рублях.
-            return converted_amount
-        else:
-            raise ValueError("Не удалось получить курс для RUB.")  # Ошибка, если нет курса для рубля.
+    data = response.json()
+    if "result" in data:
+        converted_amount = data["result"]
+        return converted_amount
     else:
-        raise ValueError("Не удалось получить обменный курс.")
+        raise ValueError("Не удалось получить курс для RUB.")
