@@ -24,72 +24,74 @@ _Данный проект представляет собой скрипт на
    git clone git@github.com:ваш_пользователь/название_репозитория.git
    ```
 3. Установите необходимые зависимости:
-
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt`
+```
 
 4. Создайте файл .env в корневом каталоге проекта и добавьте ваш API ключ:
-
-`EXCHANGE_API_KEY=ваш_ключ_api`
+```
+EXCHANGE_API_KEY=ваш_ключ_api
+```
 
 5. Перейдите в директорию проекта.
 
 #### Использование
 
 ***Импорт функций***
-    ```
-    from <your_module_name> import filter_by_state, sort_by_date, filter_by_currency, transaction_descriptions, card_number_generator  
-    Замените <your_module_name> на имя вашего модуля
-    ```
+```
+    from <your_module_name> import <имя_функции>, <имя_функции>...
+```
+```Замените <your_module_name> на имя вашего модуля, <имя_функции> на имя соответсвующей функции```
 
 
 ***Функция***
-get_mask_card_number(card_number: Union[str]) -> Union[str]
+`get_mask_card_number(card_number: Union[str]) -> Union[str]`
 
 **Описание:**
-_Принимает на вход номер карты и возвращает его маскированный вид. Номер отображается в формате_ XXXX XX** **** XXXX, _где
-видны первые 6 и последние 4 цифры._
+_Принимает на вход номер карты и возвращает его маскированный вид. Номер отображается в формате_ XXXX XX** **** XXXX, 
+_где видны первые 6 и последние 4 цифры._
 
 *Пример:*
-masked_card = get_mask_card_number("7000792289606361")
-print(masked_card)  # Вывод: "7000 79** **** 6361"
+    - masked_card = get_mask_card_number("7000792289606361")
+    - print(masked_card)  # Вывод: "7000 79** **** 6361"
 
 
 ***Функция***
-get_mask_account(account_number: Union[str]) -> Union[str]
+`get_mask_account(account_number: Union[str]) -> Union[str]`
 
 **Описание:**
 _Принимает на вход номер счета и возвращает его маскированный вид. Номер отображается в формате_ **XXXX, _где видны только
 последние 4 цифры._
 
 *Пример:*
-masked_account = get_mask_account("73654108430135874305")
-print(masked_account)  # Вывод: "**4305"
+    - masked_account = get_mask_account("73654108430135874305")
+    - print(masked_account)  # Вывод: "**4305"
 
 
 ***Функция***
-mask_account_card(types_requisites: Union[str]) -> Union[str]
+`mask_account_card(types_requisites: Union[str]) -> Union[str]`
 
 **Описание:**
 _Принимает на вход тип и номер карты или счета и возвращает их тип и маскированный номер._
 
 *Пример:*
-masked_info = mask_account_card("Visa Platinum 7000792289606361")
-print(masked_info)  # Вывод: "Visa Platinum 7000 79** **** 6361"
+    - masked_info = mask_account_card("Visa Platinum 7000792289606361")
+    - print(masked_info)  # Вывод: "Visa Platinum 7000 79** **** 6361"
 
 
 ***Функция***
-get_date(data_full: Union[str]) -> Union[str]
+`get_date(data_full: Union[str]) -> Union[str]`
 
 **Описание:**
 _Принимает на вход строку с датой в формате_ "YYYY-MM-DDTHH:MM:SS" _и возвращает строку с датой в формате_ "ДД.ММ.ГГГГ".
 
 *Пример:*
-formatted_date = get_date("2024-03-11T02:26:18.671407")
-print(formatted_date)  # Вывод: "11.03.2024"
+    - formatted_date = get_date("2024-03-11T02:26:18.671407")
+    - print(formatted_date)  # Вывод: "11.03.2024"
 
 
 ***Функция***
-sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]
+`sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]`
 
 **Описание:**
 _Принимает список словарей и необязательный параметр для задания порядка сортировки. Возвращает новый список словарей,
@@ -97,63 +99,63 @@ _Принимает список словарей и необязательны�
 
 *Пример:*
 sorted_data = sort_by_date(data)
-# Вывод [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
-# {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
+    - Вывод [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
+    - {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
 
 
 ***Функция***
-filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> Union[str, List[Dict[str, Any]]]
+`filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> Union[str, List[Dict[str, Any]]]`
 
 **Описание:**
 _Принимает список словарей и фильтрует его по состоянию state._
 
 *Пример:*
-filtered_data = filter_by_state(data, "EXECUTED")
-# Вывод [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
-# {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
+    - filtered_data = filter_by_state(data, "EXECUTED")
+    - Вывод [{'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03T18:35:29.512364'}, 
+    - {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572'}]
 
 
 ***Функция***
-filter_by_currency(transactions: List[Dict[str, Any]], currency: str) -> Iterator[Dict[str, Any]]
+`filter_by_currency(transactions: List[Dict[str, Any]], currency: str) -> Iterator[Dict[str, Any]]`
 
 **Описание:**
 _Функция возвращает итератор, который поочередно выдает транзакции, где валюта операции соответствует заданной._
 
 *Пример:*
 filtered_transactions = list(filter_by_currency(transactions, "USD"))
-# Вывод {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572', 'operationAmount': 
-# {'amount': '9824.07', 'currency': {'name': 'USD', 'code': 'USD'}}, 
-# 'description': 'Перевод организации', 'from': 'Счет 75106830613657916952', 'to': 'Счет 11776614605963066702'}
+    - Вывод {'id': 939719570, 'state': 'EXECUTED', 'date': '2018-06-30T02:08:58.425572', 'operationAmount': 
+    - {'amount': '9824.07', 'currency': {'name': 'USD', 'code': 'USD'}}, 
+    - 'description': 'Перевод организации', 'from': 'Счет 75106830613657916952', 'to': 'Счет 11776614605963066702'}
 
 
 ***Функция***
-transaction_descriptions(transactions: List[Dict[str, Any]]) -> Iterator[str]
+`transaction_descriptions(transactions: List[Dict[str, Any]]) -> Iterator[str]`
 
 **Описание:**
 _Генератор, который принимает список транзакций и возвращает описание каждой операции._
 
 *Пример:*
 descriptions = list(transaction_descriptions(transactions))
-- Перевод организации
-- Перевод со счета на счет
+    - Перевод организации
+    - Перевод со счета на счет
 
 
 ***Функция***
-card_number_generator(start: int, end: int)
+`card_number_generator(start: int, end: int)`
 
 **Описание:**
 _Генератор для создания номеров банковских карт в формате XXXX XXXX XXXX XXXX, где X - цифра._
 
 *Пример:*
 generated_numbers = list(card_number_generator(1000, 1003))
-- 0000 0000 0000 1000
-- 0000 0000 0000 1001
-- 0000 0000 0000 1002
-- 0000 0000 0000 1003
+    - 0000 0000 0000 1000
+    - 0000 0000 0000 1001
+    - 0000 0000 0000 1002
+    - 0000 0000 0000 1003
 
 
 ***Функция - декоратор***
-def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:
+`def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:`
 
 **Описание**
 _Логируемая информация:
@@ -174,7 +176,7 @@ def get_mask_account(account_number: Union[str]) -> Union[str, ValueError]:
     """Функция принимает на вход номер счёта и возвращает замаскированный счёт"""
 
 **вызов декоратора**
-get_mask_account(7854121223455678)
+`get_mask_account(7854121223455678)`
 
 ### Запись в log.txt:
 - get_mask_card_number ok. Возвращаемое значение 7854 12** **** 5678. Время выполнения: 0:00:00.000140
@@ -214,7 +216,7 @@ _Конвертирует сумму из указанной валюты в р�
 
 
 ***Функция***
-#### `load_transactions(file_path: str) -> List[Dict[str, Any]]`
+`load_transactions(file_path: str) -> List[Dict[str, Any]]`
 
 Загружает данные о транзакциях из JSON-файла.
 
@@ -243,28 +245,52 @@ pip install pytest
 
 4. Для запуска тестов используйте следующую команду:
 
-**В модулях с тестами имеется конструкция:** `if __name__ == "__main__": pytest.main()` 
+**В модулях с тестами имеется конструкция:** 
+```
+if __name__ == "__main__": pytest.main()`
+```
+
 ```Можно запустить все тесты, фикстуры в каждом модуле отдельно```
 
   Для запуска из терминала:
-**Или например для функций из модуля `processing.py`:**  ```pytest tests/test_processing.py```
+**Или например для функций из модуля `processing.py`:**  
+  ```
+  pytest tests/test_processing.py
+  ```
 
 5. Для запуска всех тестов используйте команду:
 
-```pytest```
+```
+pytest
+```
 
 6. Для запуска тестов с оценкой покрытия используйте команду:
-`pytest --cov` — ```при активированном виртуальном окружении.```
+```При активированном виртуальном окружении.```
+```
+6. pytest --cov
+ ``` 
 
-`poetry run pytest --cov` — ```через poetry.```
+ ```Через poetry.```
+```
+poetry run pytest --cov
+``` 
 
-`pytest --cov=src --cov-report=html`  — ```чтобы сгенерировать отчет о покрытии в HTML-формате```
+ ```Чтобы сгенерировать отчет о покрытии в HTML-формате```
+```
+pytest --cov=src --cov-report=html
+ ```
 
 7. Для проверки какие тесты пропущены введите команду:
-`pytest --cov=src --cov-report=term-missing`  - src это модуль в котором мы ищем пропуски.
+```Src это модуль в котором мы ищем пропуски.```
+```
+pytest --cov=src --cov-report=term-missing
+``` 
 
 8. Для проверки какие тесты пропущены в папке tests.
-`pytest --cov=tests --cov-report=term-missing` - tests это модуль, в котором мы ищем пропуски.
+``` Tests это модуль, в котором мы ищем пропуски.```
+```
+pytest --cov=tests --cov-report=term-missing
+```
 
 
 *Примеры тестов*
@@ -335,7 +361,3 @@ _Этот модуль предоставляет удобные функции 
 
 ***Документация***
 Для получения дополнительной информации обратитесь к [документации](README.md).
-
-### Функции
-
-#### `convert_to_rub(transaction: Dict[str, Any]) -> float`
