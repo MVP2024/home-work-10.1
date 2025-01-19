@@ -35,12 +35,12 @@ def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:
                 execution_time = end_time - start_time  # расчёт время выполнения функции
                 # Запись об успешном завершении.
                 write_log(
-                    f"{function.__name__} ok. " f"Возвращаемое значение {result}. Время выполнения: {execution_time}"
+                    f"{function.__name__} ok. " f"Возвращаемое значение {result}. Время выполнения: {execution_time}",
                 )
                 return result  # Возвращаем резкльтат функции
             except Exception as e:
                 write_log(
-                    f"{function.__name__}) error: {type(e).__name__}. " f"Inputs: {args}, {kwargs}. Ошибка: {str(e)}"
+                    f"{function.__name__}) error: {type(e).__name__}. " f"Inputs: {args}, {kwargs}. Ошибка: {str(e)}",
                 )
                 raise  # Повторно выводим исключение
 
