@@ -15,7 +15,7 @@ def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:
     def write_log(information: str) -> None:
         """Записывает информацию в файл или выводит в консоль."""
         if filename:
-            with open(filename, "a", encoding="utf-8") as f:
+            with open(filename, "w", encoding="utf-8") as f:
                 f.write(information + "\n")
         else:
             print(information)
