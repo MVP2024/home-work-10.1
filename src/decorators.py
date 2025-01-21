@@ -15,7 +15,7 @@ def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:
     def write_log(information: str) -> None:
         """Записывает информацию в файл или выводит в консоль."""
         if filename:
-            with open(filename, "w", encoding="utf-8") as f:
+            with open(filename, "a", encoding="utf-8") as f:
                 f.write(information + "\n")
         else:
             print(information)
@@ -37,7 +37,7 @@ def log(filename: Optional[str] = None, time_delay: float = 0) -> Callable:
                 write_log(
                     f"{function.__name__} ok. " f"Возвращаемое значение {result}. Время выполнения: {execution_time}",
                 )
-                return result  # Возвращаем резкльтат функции
+                return result  # Возвращаем результат функции
             except Exception as e:
                 write_log(
                     f"{function.__name__}) error: {type(e).__name__}. " f"Inputs: {args}, {kwargs}. Ошибка: {str(e)}",
