@@ -4,7 +4,7 @@ from src.decorators import log
 from src.logger import setup_logger
 
 # Настройка логгера для модуля masks
-logger = setup_logger("masks")
+logger = setup_logger(__name__)
 
 # Логируем инициализацию модуля
 logger.info("Инициализация модуля masks")
