@@ -9,12 +9,12 @@ from src.masks import get_mask_account, get_mask_card_number  # Импортир
     "card_number, expected",
     [
         ("1234567812345678", "1234 56** **** 5678"),
-        ("123456781234", "Ошибка: слишком короткий номер."),
-        ("12345678123456789", "Ошибка: слишком длинный номер."),
-        ("1234abcd5678efgh", "Ошибка: присутствуют другие символы."),
+        ("123456781234", "Ошибка: слишком короткий номер карты."),
+        ("12345678123456789", "Ошибка: слишком длинный номер карты."),
+        ("1234abcd5678efgh", "Ошибка: присутствуют другие символы в номера карты."),
         ("", "Ошибка: входная строка пустая."),
-        ("123456781234567", "Ошибка: слишком короткий номер."),
-        ("12345678123456780", "Ошибка: слишком длинный номер."),
+        ("123456781234567", "Ошибка: слишком короткий номер карты."),
+        ("12345678123456780", "Ошибка: слишком длинный номер карты."),
     ],
 )
 def test_get_mask_card_number(card_number, expected):
@@ -27,15 +27,15 @@ def test_correct_card(correct_card):
 
 
 def test_short_card(short_card):
-    assert get_mask_card_number(short_card) == "Ошибка: слишком короткий номер."
+    assert get_mask_card_number(short_card) == "Ошибка: слишком короткий номер карты."
 
 
 def test_long_card(long_card):
-    assert get_mask_card_number(long_card) == "Ошибка: слишком длинный номер."
+    assert get_mask_card_number(long_card) == "Ошибка: слишком длинный номер карты."
 
 
 def test_invalid_card_chars(invalid_card_chars):
-    assert get_mask_card_number(invalid_card_chars) == "Ошибка: присутствуют другие символы."
+    assert get_mask_card_number(invalid_card_chars) == "Ошибка: присутствуют другие символы в номере карты."
 
 
 def test_empty_card(empty_card):
@@ -47,12 +47,12 @@ def test_empty_card(empty_card):
     "account_number, expected",
     [
         ("1234567812345678", "**5678"),
-        ("123456781234", "Ошибка: слишком короткий номер."),
-        ("12345678123456789", "Ошибка: слишком длинный номер."),
-        ("1234abcd5678efgh", "Ошибка: присутствуют другие символы."),
+        ("123456781234", "Ошибка: слишком короткий номер счёта."),
+        ("12345678123456789", "Ошибка: слишком длинный номер счёта."),
+        ("1234abcd5678efgh", "Ошибка: присутствуют другие символы в счёте."),
         ("", "Ошибка: входная строка пустая."),
-        ("123456781234567", "Ошибка: слишком короткий номер."),
-        ("12345678123456780", "Ошибка: слишком длинный номер."),
+        ("123456781234567", "Ошибка: слишком короткий номер счёта."),
+        ("12345678123456780", "Ошибка: слишком длинный номер счёта."),
     ],
 )
 def test_get_mask_account(account_number, expected):
@@ -65,15 +65,15 @@ def test_valid_account(valid_account):
 
 
 def test_short_account(short_account):
-    assert get_mask_account(short_account) == "Ошибка: слишком короткий номер."
+    assert get_mask_account(short_account) == "Ошибка: слишком короткий номер счёта."
 
 
 def test_long_account(long_account):
-    assert get_mask_account(long_account) == "Ошибка: слишком длинный номер."
+    assert get_mask_account(long_account) == "Ошибка: слишком длинный номер счёта."
 
 
 def test_invalid_account_chars(invalid_account_chars):
-    assert get_mask_account(invalid_account_chars) == "Ошибка: присутствуют другие символы."
+    assert get_mask_account(invalid_account_chars) == "Ошибка: присутствуют другие символы в счёте."
 
 
 def test_empty_account(empty_account):

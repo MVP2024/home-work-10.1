@@ -24,6 +24,7 @@ print(get_mask_card_number(""))
 print(get_mask_account("7854121223455678"))
 print(get_mask_account("78541211-*/45567"))
 print(get_mask_account(""))
+print(get_mask_card_number(" "))
 
 """ Вывод название карты и скрытого номера
  или счёта со скрытым номером """
@@ -76,20 +77,18 @@ for card_number in card_number_generator(12, 14):
 
 
 """Вызов функции для конвертации валюты"""
-if __name__ == "__main__":
-    print("Загрузка транзакций...")
+print("Загрузка транзакций...")
+# Используем относительный путь к файлу
+transactions_json = load_transactions("../data/operations.json")
 
-    # Используем относительный путь к файлу
-    transactions_json = load_transactions("../data/operations.json")
-
-    if not transactions_json:
-        print("Нет доступных транзакций для обработки.")
-    else:
-        print(f"Найдено {len(transactions_json)} транзакций.")
-        for transaction in transactions_json:
-            print(f"Обрабатываем транзакцию: {transaction}")
-            try:
-                amount_in_rub = convert_to_rub(transaction)
-                print(f"Сумма транзакции в рублях: {amount_in_rub}")
-            except ValueError as e:
-                print(f"Ошибка при конвертации: {e}")
+if not transactions_json:
+    print("Нет доступных транзакций для обработки.")
+else:
+    print(f"Найдено {len(transactions_json)} транзакций.")
+    for transaction in transactions_json:
+        print(f"Обрабатываем транзакцию: {transaction}")
+        try:
+            amount_in_rub = convert_to_rub(transaction)
+            print(f"Сумма транзакции в рублях: {amount_in_rub}")
+        except ValueError as e:
+            print(f"Ошибка при конвертации: {e}")

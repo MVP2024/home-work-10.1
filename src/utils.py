@@ -1,11 +1,15 @@
 import json
 from typing import Any, Dict, List
-import logging
+
 from src.logger import setup_logger
 
-
 # Настройка логгера для модуля utils
-logger = setup_logger('utils')
+logger = setup_logger("utils")
+
+# Логируем инициализацию модуля
+logger.info("Инициализация модуля utils")
+
+
 def load_transactions(file_path: str) -> List[Dict[str, Any]]:
     """
     Загружает данные о транзакциях из JSON-файла.
