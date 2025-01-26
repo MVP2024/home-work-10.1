@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 from src.logger import setup_logger
 
 # Настройка логгера для модуля utils
-logger = setup_logger("utils")
+logger = setup_logger(__name__)
 
 # Логируем инициализацию модуля
 logger.info("Инициализация модуля utils")

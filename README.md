@@ -250,6 +250,48 @@ _Конвертирует сумму из указанной валюты в р�
   print(transactions)  # Выводит список транзакций или пустой список
   ```
 
+***Функция***
+`def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, str]]`
+
+Загружает данные о транзакциях из csv-файла.
+
+- **Параметры**:
+- `file_path (str)`: Путь к файлу csv.
+
+- **Возвращаемое значение**:
+  - List[Dict[str, str]]: Список словарей с транзакциями и исключения:
+  - FileReadError: Если файл не может быть прочитан.
+  - EmptyFileError: Если файл пуст или не содержит данных.
+  - InvalidFileFormatError: Если файл не является форматом CSV.
+  - FileNotFoundError: Если файл не существует.
+
+- **Пример использования**:
+```
+    transactions_csv =  read_financial_operations_from_csv("path/to/your/file.csv")
+    transaction_csv(file_path: str) -> List[Dict[str, str]]
+```
+
+***Функция***
+`read_financial_operations_from_excel(file_path: str) -> list[dict[Hashable, Any]]`
+
+Загружает данные о транзакциях из xlsx-файла.
+
+- **Параметры**:
+- `file_path (str)`: Путь к файлу csv.
+
+- **Возвращаемое значение**:
+  - list[dict[Hashable, Any]]: Список словарей с транзакциями и исключения:
+  - FileReadError: Если файл не может быть прочитан.
+  - EmptyFileError: Если файл пуст или не содержит данных.
+  - InvalidFileFormatError: Если файл не является форматом Excel.
+  - FileNotFoundError: Если файл не существует.
+
+- **Пример использования**:
+```
+    transactions = read_financial_operations_from_excel("path/to/your/file.xlsx")
+    transaction_excel(file_path: str) -> list[dict[Hashable, Any]]
+```
+
 
 ##### Тестирование
 
@@ -388,6 +430,31 @@ API_KEY=Ваш_api_key_введите_сюда
     load_dotenv()
 ```
 
+
+**Тесты для  `read_financial_operations_from_csv`**:
+
+- `test_file_not_found`: Проверяет, что при отсутствии файла выбрасывается исключение FileNotFoundError.
+- `test_invalid_file_format`: Проверяет, что при неверном формате файла выбрасывается исключение InvalidFileFormatError.
+- `test_empty_file`: Проверяет, что при попытке чтения пустого файла выбрасывается исключение EmptyFileError.
+- `test_successful_read`: Проверяет успешное чтение данных из корректного файла CSV.
+- `test_read_file_error`: Проверяет, что при ошибке чтения файла выбрасывается исключение FileReadError.
+
+
+**Тесты для `read_financial_operations_from_excel`**:
+- test_file_not_found: Проверяет, что функция вызывает исключение FileNotFoundError, если указанный файл не существует. 
+`Использует мокирование os.path.isfile, чтобы вернуть False.`
+- test_invalid_file_format: Проверяет, что функция вызывает исключение InvalidFileFormatError, если файл существует, но имеет неверный формат (например, текстовый файл).
+`Мокирует os.path.isfile, чтобы вернуть True.`
+- test_read_file_error: Проверяет, что функция вызывает исключение FileReadError, если возникает ошибка при чтении файла.
+`Мокирует pandas.read_excel, чтобы вызвать исключение при попытке чтения.`
+- test_empty_file: Проверяет, что функция вызывает исключение EmptyFileError, если файл существует, но является пустым (возвращает пустой DataFrame).
+`Мокирует pandas.read_excel, чтобы вернуть пустой DataFrame.`
+- test_successful_read: Проверяет, что функция корректно читает данные из файла и возвращает их в ожидаемом формате.
+`Мокирует pandas.read_excel, чтобы вернуть DataFrame с тестовыми данными, и проверяет соответствие результата ожидаемому.`
+
+
+
+
 ### Логирование.
 
 В проекте реализовано логирование для отслеживания работы функций и обработки ошибок. 
@@ -445,7 +512,7 @@ def get_mask_account(account_number: Union[str]) -> Union[str, ValueError]:
 
 **Заключение**
 _Этот модуль предоставляет удобные функции для работы с данными, включая маскировку, фильтрацию, сортировку, форматирование,
-конвертацию валют используя API.
+конвертацию валют используя API, а также предназначены для безопасного и корректного чтения финансовых операций из файлов различных форматов (CSV и Excel).
 Ознакомьтесь с тестами, чтобы понять, как функции работают в различных сценариях._
 _В модуле также реализованы декораторы и логгирование, для расширения поведения функций._
 
