@@ -4,13 +4,8 @@ from dotenv import load_dotenv
 
 from src.data_files import data, transactions
 from src.external_api import convert_to_rub
-from src.financial_transactions import (
-    EmptyFileError,
-    FileReadError,
-    InvalidFileFormatError,
-    read_financial_operations_from_csv,
-    read_financial_operations_from_excel,
-)
+from src.financial_transactions import (EmptyFileError, FileReadError, InvalidFileFormatError,
+                                        read_financial_operations_from_csv, read_financial_operations_from_excel)
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
