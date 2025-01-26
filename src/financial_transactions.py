@@ -1,6 +1,6 @@
 import csv
 import os
-from typing import Dict, List, Any, Hashable
+from typing import Any, Dict, Hashable, List
 
 import pandas as pd
 
@@ -55,8 +55,6 @@ def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, str]]:
 
     return transactions_from_csv
 
-
-from typing import List, Dict, Any
 
 def read_financial_operations_from_excel(file_path: str) -> list[dict[Hashable, Any]]:
     """
