@@ -1,9 +1,8 @@
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
-import os
-import csv
+from unittest.mock import mock_open, patch
+
 import pandas as pd
-from typing import List, Dict
+
 from src.financial_transactions import (EmptyFileError, FileReadError, InvalidFileFormatError,
                                         read_financial_operations_from_csv, read_financial_operations_from_excel)
 
@@ -28,11 +27,12 @@ class TestReadFinancialOperationsFromCSV(unittest.TestCase):
             read_financial_operations_from_csv("empty_file.csv")
 
     @patch("os.path.isfile", return_value=True)  # Мокируем os.path.isfile, чтобы он возвращал True
-    @patch("builtins.open", new_callable=mock_open,
-           read_data="column1,column2\nvalue1,value2\n")  # Мокируем open с данными
+    @patch(
+        "builtins.open", new_callable=mock_open, read_data="column1,column2\nvalue1,value2\n"
+    )  # Мокируем open с данными
     def test_successful_read(self, mock_file, mock_isfile):
         result = read_financial_operations_from_csv("valid_file.csv")
-        expected = [{'column1': 'value1', 'column2': 'value2'}]
+        expected = [{"column1": "value1", "column2": "value2"}]
         self.assertEqual(result, expected)
 
     @patch("os.path.isfile", return_value=True)  # Мокируем os.path.isfile, чтобы он возвращал True
@@ -76,13 +76,7 @@ class TestReadFinancialOperationsFromExcel(unittest.TestCase):
     @patch("pandas.read_excel")  # Мокируем pandas.read_excel
     def test_successful_read(self, mock_read_excel, mock_isfile):
         # Настраиваем mock, чтобы возвращать DataFrame с данными
-        mock_read_excel.return_value = pd.DataFrame({
-            'column1': ['value1', 'value2'],
-            'column2': ['value3', 'value4']
-        })
+        mock_read_excel.return_value = pd.DataFrame({"column1": ["value1", "value2"], "column2": ["value3", "value4"]})
         result = read_financial_operations_from_excel("valid_file.xlsx")
-        expected = [
-            {'column1': 'value1', 'column2': 'value3'},
-            {'column1': 'value2', 'column2': 'value4'}
-        ]
+        expected = [{"column1": "value1", "column2": "value3"}, {"column1": "value2", "column2": "value4"}]
         self.assertEqual(result, expected)
