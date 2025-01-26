@@ -1,9 +1,11 @@
 import os
 
 from dotenv import load_dotenv
-
+import csv
 from src.data_files import data, transactions
 from src.external_api import convert_to_rub
+from src.financial_transactions import read_financial_operations_from_csv, FileReadError, EmptyFileError, \
+	InvalidFileFormatError, read_financial_operations_from_excel
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
@@ -15,7 +17,7 @@ print("Текущая рабочая директория:", os.getcwd())
 
 """ Вывод всех функций. """
 if __name__ == "__main__":
-    """Вывод замаскированного номера карты и счёта"""
+	"""Вывод замаскированного номера карты и счёта"""
 print(get_mask_card_number("7854121223455678"))
 print(get_mask_card_number("78541212234"))
 print(get_mask_card_number("7854121223455678444445"))
@@ -59,22 +61,21 @@ print(sort_by_date(data, True))
 usd_transactions = filter_by_currency(transactions, "USD")
 """Вывод отфильтрованных транзакций"""
 for transaction in usd_transactions:
-    print(transaction)
+	print(transaction)
 
 usd_transactions = filter_by_currency(transactions, "RUB")
 """Вывод отфильтрованных транзакций"""
 for transaction in usd_transactions:
-    print(transaction)
+	print(transaction)
 
 """Вызов функции - генератора transaction_descriptions"""
 descriptions = transaction_descriptions(transactions)
 for _ in range(2):  # Печатаем 2 описания
-    print(next(descriptions))
+	print(next(descriptions))
 
 """Вызов функции - генератора для создания номеров банковских карт"""
 for card_number in card_number_generator(12, 14):
-    print(card_number)
-
+	print(card_number)
 
 """Вызов функции для конвертации валюты"""
 print("Загрузка транзакций...")
@@ -82,13 +83,38 @@ print("Загрузка транзакций...")
 transactions_json = load_transactions("../data/operations.json")
 
 if not transactions_json:
-    print("Нет доступных транзакций для обработки.")
+	print("Нет доступных транзакций для обработки.")
 else:
-    print(f"Найдено {len(transactions_json)} транзакций.")
-    for transaction in transactions_json:
-        print(f"Обрабатываем транзакцию: {transaction}")
-        try:
-            amount_in_rub = convert_to_rub(transaction)
-            print(f"Сумма транзакции в рублях: {amount_in_rub}")
-        except ValueError as e:
-            print(f"Ошибка при конвертации: {e}")
+	print(f"Найдено {len(transactions_json)} транзакций.")
+	for transaction in transactions_json:
+		print(f"Обрабатываем транзакцию: {transaction}")
+		try:
+			amount_in_rub = convert_to_rub(transaction)
+			print(f"Сумма транзакции в рублях: {amount_in_rub}")
+		except ValueError as e:
+			print(f"Ошибка при конвертации: {e}")
+
+"""Вызов функции для считывания файла формата csv."""
+if __name__ == "__main__":
+	# Создаём абсолютный путь к файлу csv.
+	file_path_csv = os.path.join(os.path.dirname(__file__), '..', 'data', 'transactions.csv')  # Путь к файлу
+	try:
+		transactions_csv = read_financial_operations_from_csv(file_path_csv)
+		print("Считанные транзакции:")
+		for transaction_csv in transactions_csv:
+			print(transaction_csv)
+	except (FileReadError, EmptyFileError, InvalidFileFormatError, FileNotFoundError) as e:
+		print(f"Ошибка: {e}")
+
+"""Вызов функции для считывания файла формата xlsx."""
+if __name__ == "__main__":
+	# Создаём абсолютный путь к файлу xlsx.
+	file_path_excel = os.path.join(os.path.dirname(__file__), '..', 'data', 'transactions_excel.xlsx')  # Путь к файлу
+
+	try:
+		transactions_excel = read_financial_operations_from_excel(file_path_excel)
+		print("Считанные транзакции:")
+		for transaction_excel in transactions_excel:
+			print(transaction_excel)
+	except (FileReadError, EmptyFileError, InvalidFileFormatError, FileNotFoundError) as e:
+		print(f"Ошибка: {e}")
