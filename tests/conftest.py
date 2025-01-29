@@ -162,3 +162,19 @@ def divide(a, b):
 @log()
 def raise_error():
     raise ValueError("This is an error")
+
+
+# Фикстура для тестирования функции count_transactions_by_category
+@pytest.fixture
+def transaction_data():
+    return [
+        {'id': 1, 'description': 'Food', 'amount': 100},
+        {'id': 2, 'description': 'Transport', 'amount': 50},
+        {'id': 3, 'description': '', 'amount': 200},  # Пустое описание
+        {'id': 4, 'amount': 150},  # Без описания
+        {'id': 5, 'description': 'Utilities', 'amount': 300},
+    ]
+
+@pytest.fixture
+def categories():
+    return ['Food', 'Transport', 'Utilities', 'Entertainment']
