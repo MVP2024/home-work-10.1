@@ -1,10 +1,10 @@
 from collections import Counter
 import pytest
 
-from src.bank_operations import count_transactions_by_category
+from src.bank_operations import count_transactions_by_category, filter_bank_operations
 
 
-# Тестирование функции тестирования функции filter_bank_operations.
+# Тестирование функции тестирования функции count_transactions_by_category.
 # Параметризация тестов
 @pytest.mark.parametrize("input_data,expected", [
     ([
@@ -58,3 +58,89 @@ def test_count_transactions_with_mixed_valid_and_invalid(transaction_data, categ
     ]
     result = count_transactions_by_category(mixed_data, categories)
     assert result == {'Food': 1, 'Transport': 0, 'Utilities': 1, 'Entertainment': 0}
+
+
+# Тестирование функции тестирования функции filter_bank_operations.
+# Параметризация тестов
+@pytest.mark.parametrize(
+    "transactions, search_str, expected_output",
+    [
+        # Тест с обычным совпадением
+        (
+            [
+                {'id': 1, 'description': 'Grocery shopping'},
+                {'id': 2, 'description': 'Utilities payment'},
+            ],
+            'Grocery',
+            [{'id': 1, 'description': 'Grocery shopping'}]
+        ),
+        # Тест с учетом регистра
+        (
+            [
+                {'id': 1, 'description': 'Grocery Shopping'},
+                {'id': 2, 'description': 'Utilities Payment'},
+            ],
+            'grocery',
+            [{'id': 1, 'description': 'Grocery Shopping'}]
+        ),
+        # Тест с отсутствием совпадений
+        (
+            [
+                {'id': 1, 'description': 'Grocery Shopping'},
+                {'id': 2, 'description': 'Utilities Payment'},
+            ],
+            'Rent',
+            []
+        ),
+        # Тест с пустой строкой
+        (
+            [
+                {'id': 1, 'description': 'Grocery Shopping'},
+            ],
+            '',
+            []  # Ожидаемый вывод должен быть пустым, так как строка поиска пустая
+        ),
+        # Тест с пустым списком транзакций
+        (
+            [],
+            'Grocery',
+            []
+        ),
+        # Тест с некорректным типом данных для transactions
+        (
+            'not a list',
+            'Grocery',
+            ValueError  # Ожидаем, что будет выброшено исключение ValueError
+        ),
+        # Тест с некорректным типом данных для search_str
+        (
+            [
+                {'id': 1, 'description': 'Grocery Shopping'},
+            ],
+            123,
+            ValueError  # Ожидаем, что будет выброшено исключение ValueError
+        )
+    ]
+)
+def test_filter_bank_operations(transactions, search_str, expected_output):
+    if isinstance(expected_output, type) and issubclass(expected_output, Exception):
+        with pytest.raises(expected_output):
+            filter_bank_operations(transactions, search_str)
+    else:
+        result = filter_bank_operations(transactions, search_str)
+        assert result == expected_output
+
+
+def test_invalid_transactions_type():
+    with pytest.raises(ValueError, match="transactions должен быть списком словарей"):
+        filter_bank_operations("not_a_list", "Food")
+
+
+def test_invalid_search_string_type():
+    with pytest.raises(ValueError, match="search_str должен быть строкой"):
+        filter_bank_operations([], 123)  # Числовой тип вместо строки
+
+
+def test_empty_search_string():
+    result = filter_bank_operations([{'id': 1, 'description': 'Food'}], "")
+    assert result == []

@@ -12,7 +12,13 @@ def filter_by_currency(transactions: List[Dict[str, Any]], currency: str) -> Ite
     """
     for transaction in transactions:
         # Проверяем, соответствует ли валюта
-        if transaction.get("operationAmount", {}).get("currency", {}).get("code") == currency:
+        # Сначала проверяем более сложную структуру
+        operation_amount = transaction.get("operationAmount")
+        if operation_amount:
+            if operation_amount.get("currency", {}).get("code") == currency:
+                yield transaction
+        # Затем проверяем простую структуру
+        elif transaction.get("currency_code") == currency:
             yield transaction
 
 

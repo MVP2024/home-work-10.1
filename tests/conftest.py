@@ -178,3 +178,15 @@ def transaction_data():
 @pytest.fixture
 def categories():
     return ['Food', 'Transport', 'Utilities', 'Entertainment']
+
+
+# Фикстура для тестирования функции filter_bank_operations
+@pytest.fixture
+def sample_transactions():
+    return [
+        {'id': 1, 'description': 'Food', 'amount': 100},
+        {'id': 2, 'description': 'Transport', 'amount': 50},
+        {'id': 3, 'description': 'Utilities', 'amount': 300},
+        {'id': 4, 'description': 'Entertainment', 'amount': 200},
+        {'id': 5, 'description': 'Food and Beverages', 'amount': 150},
+    ]
