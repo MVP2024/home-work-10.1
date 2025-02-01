@@ -1,118 +1,134 @@
+
 import os
-
 from dotenv import load_dotenv
+from unicodedata import category
 
-from src.data_files import data, transactions
+from src.bank_operations import filter_bank_operations, count_operations_by_category
+# Импортируем необходимые функции и классы
 from src.external_api import convert_to_rub
 from src.financial_transactions import (EmptyFileError, FileReadError, InvalidFileFormatError,
-                                        read_financial_operations_from_csv, read_financial_operations_from_excel)
+                                         read_financial_operations_from_csv, read_financial_operations_from_excel)
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.utils import load_transactions
 from src.widget import get_date, mask_account_card
 
-load_dotenv()
-print("Текущая рабочая директория:", os.getcwd())
+import csv
+import pandas as pd
+import json
+from typing import List, Dict, Any
 
-""" Вывод всех функций. """
+from src.logger import setup_logger
+from src.decorators import log
+import re
+
+
+import os
+import re
+from typing import List, Dict, Any, Tuple, Union
+
+
+def main():
+    print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
+    print("Выберите необходимый пункт меню:")
+    print("1. Получить информацию о транзакциях из JSON-файла")
+    print("2. Получить информацию о транзакциях из CSV-файла")
+    print("3. Получить информацию о транзакциях из XLSX-файла")
+
+    lst_transactions = []
+    while True:
+        choice = input("Пожалуйста, выберите 1, 2 или 3 для выбора из пункта меню: ")
+        if choice == "1":
+            file_path = os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")
+            lst_transactions = load_transactions(file_path)
+            print("Для обработки выбран JSON-файл.")
+            break
+        elif choice == "2":
+            file_path = os.path.join(os.path.dirname(__file__), "..", "data", "transactions.csv")
+            lst_transactions = read_financial_operations_from_csv(file_path)
+            print("Для обработки выбран CSV-файл.")
+            break
+        elif choice == "3":
+            file_path = os.path.join(os.path.dirname(__file__), "..", "data", "transactions_excel.xlsx")
+            lst_transactions = read_financial_operations_from_excel(file_path)
+            print("Для обработки выбран XLSX-файл.")
+            break
+        else:
+            print("Неверный выбор. Пожалуйста, попробуйте снова.")
+
+    # print(f'Загружен список: {lst_transactions}')
+
+    valid_statuses = ["EXECUTED", "CANCELED", "PENDING"]
+    status = ''
+    while status.upper() not in valid_statuses:
+        status = input("Введите статус, по которому необходимо выполнить фильтрацию (EXECUTED, CANCELED, PENDING): ").upper()
+        if status not in valid_statuses:
+            print(f"Статус операции \"{status}\" недоступен. Попробуйте снова.")
+
+    # Фильтруем транзакции
+    filtered_transactions = filter_by_state(lst_transactions, status)
+
+    # print(f'Вывод списка отфильтрованного по статусу: {status} {filtered_transactions}')
+    print(f"Операции отфильтрованы по статусу \"{status.upper()}\".")
+
+    # Запрос на сортировку
+    while True:
+        sort_choice = input("Отсортировать операции по дате? Да/Нет: ").strip().lower()
+        if sort_choice in ['да', 'нет']:
+            break
+        print("Неверный ввод. Пожалуйста, введите 'Да' или 'Нет'.")
+
+    if sort_choice == 'да':
+        while True:
+            order_choice = input("Введите 1 для сортировки по возрастанию или 2 по убыванию: ").strip()
+            if order_choice in ['1', '2']:
+                break
+            print("Неверный ввод. Пожалуйста, введите 1 или 2.")
+
+        ascending = order_choice == '1'
+        filtered_transactions = sort_by_date(filtered_transactions, reverse=not ascending)
+
+        order_text = "возрастанию" if ascending else "убыванию"
+        # print(f'Вывод списка отсортированного по {order_text}: {filtered_transactions}.')
+
+    # Запрос на фильтрацию по валюте
+    currency_filter = input("Выводить только рублевые транзакции? Да/Нет: ").strip().lower()
+    if currency_filter == 'да':
+        filtered_transactions = list(filter_by_currency(filtered_transactions, "RUB"))
+
+    # Запрос на фильтрацию по описанию
+    while True:
+        description_filter = input(
+            "Отфильтровать список транзакций  по описании категорий? Да/Нет: ").strip().lower()
+        if description_filter in ['да', 'нет']:
+            break
+        else:
+            print("Неверно. Введите 'да' или 'нет'.")
+
+    if description_filter == 'да':
+        # Вводим слово или часть слова по которому будем фильтровать список.
+        keyword = input("Введите слово или часть слова для фильтрации по : ").strip()
+        filtered_transactions = filter_bank_operations(filtered_transactions, keyword)
+
+    if not filtered_transactions:
+        print(f"Не найдено ни одной транзакции, соответствующей критериям фильтрации по описанию категории: \\{keyword}\\.")
+
+
+    if filtered_transactions:
+        # Переводим в список и возвращаем описание каждой операции после фильтрации списка
+        categories = list(transaction_descriptions(filtered_transactions))
+
+        # Подсчитываем количество операций в отфильтрованном списке.
+        print(f"Всего банковских операций в выборке: {count_operations_by_category(filtered_transactions, categories)}")
+        for txn in filtered_transactions:
+            print(f"{get_date(txn.get('date'))}: {txn.get('description')}")
+
+            print(f"{mask_account_card(txn.get('from'))} -> {mask_account_card(txn.get('to'))}")
+            amount = txn.get('amount') or txn.get('operationAmount', {}).get('amount')  # Получаем сумму
+            currency = txn.get('operationAmount', {}).get("currency", {}).get('code') or txn.get('currency_code')  # Получаем валюту
+            print(f"Сумма: {amount} {currency}\n")
+
+
 if __name__ == "__main__":
-
-    """Вывод замаскированного номера карты и счёта"""
-    print(get_mask_card_number("7854121223455678"))
-    print(get_mask_card_number("78541212234"))
-    print(get_mask_card_number("7854121223455678444445"))
-    print(get_mask_card_number("78541апр555678рп"))
-    print(get_mask_card_number(""))
-    print(get_mask_account("7854121223455678"))
-    print(get_mask_account("78541211-*/45567"))
-    print(get_mask_account(""))
-    print(get_mask_card_number(" "))
-
-    """Вывод название карты и скрытого номера
-     или счёта со скрытым номером """
-    print(mask_account_card("Visa Platinum 7000792289606361"))
-    print(mask_account_card("Visa Silver 7000792289606361"))
-    print(mask_account_card(""))
-    print(mask_account_card("Maestro Bobr Kurwa 2345567889455565"))
-    print(mask_account_card("Счет 73654108430135874305"))
-    print(mask_account_card("Счёт 7365410/**874305"))
-    print(mask_account_card("Счёт 2345234578894556"))
-    print(mask_account_card("123456"))
-    print(mask_account_card("MasterCard 123456"))
-    print(mask_account_card("MasterCard 1234567890369854"))
-    print(mask_account_card("MasterCard 12345656756767657676"))
-    print(mask_account_card("MasterCard 123/*/*///*//*kjhkjhkjhkj456"))
-    print(mask_account_card("MasterCard 123456/*/*/"))
-
-    """Вывод даты"""
-    print(get_date("2024-03-11T02:26:18.671407"))
-    print(get_date("2054---3--11:26:18.671407"))
-    print(get_date(""))
-    print(get_date("4587^1"))
-
-    """Вывод отсортированного списка по state"""
-    print(filter_by_state(data, "EXECUTED"))
-    print(filter_by_state(data, "CANCELED"))
-
-    """Вывод списка по date отсортированного (по-умолчанию) на убывание"""
-    print(sort_by_date(data, True))
-
-    """Вызов функции - генератора filter_by_currency"""
-    usd_transactions = filter_by_currency(transactions, "USD")
-    """Вывод отфильтрованных транзакций"""
-    for transaction in usd_transactions:
-        print(transaction)
-
-    usd_transactions = filter_by_currency(transactions, "RUB")
-    """Вывод отфильтрованных транзакций"""
-    for transaction in usd_transactions:
-        print(transaction)
-
-    """Вызов функции - генератора transaction_descriptions"""
-    descriptions = transaction_descriptions(transactions)
-    for _ in range(2):  # Печатаем 2 описания
-        print(next(descriptions))
-
-    """Вызов функции - генератора для создания номеров банковских карт"""
-    for card_number in card_number_generator(12, 14):
-        print(card_number)
-
-    """Вызов функции для конвертации валюты"""
-    print("Загрузка транзакций...")
-    # Используем относительный путь к файлу
-    transactions_json = load_transactions("../data/operations.json")
-
-    if not transactions_json:
-        print("Нет доступных транзакций для обработки.")
-    else:
-        print(f"Найдено {len(transactions_json)} транзакций.")
-        for transaction in transactions_json:
-            print(f"Обрабатываем транзакцию: {transaction}")
-            try:
-                amount_in_rub = convert_to_rub(transaction)
-                print(f"Сумма транзакции в рублях: {amount_in_rub}")
-            except ValueError as e:
-                print(f"Ошибка при конвертации: {e}")
-
-    """Вызов функции для считывания файла формата csv."""
-    # Создаём абсолютный путь к файлу csv.
-    file_path_csv = os.path.join(os.path.dirname(__file__), "..", "data", "transactions.csv")  # Путь к файлу
-    try:
-        transactions_csv = read_financial_operations_from_csv(file_path_csv)
-        print("Считанные транзакции:")
-        for transaction_csv in transactions_csv:
-            print(transaction_csv)
-    except (FileReadError, EmptyFileError, InvalidFileFormatError, FileNotFoundError) as e:
-        print(f"Ошибка: {e}")
-
-    """Вызов функции для считывания файла формата xlsx."""
-    # Создаём абсолютный путь к файлу xlsx.
-    file_path_excel = os.path.join(os.path.dirname(__file__), "..", "data", "transactions_excel.xlsx")  # Путь к файлу
-    try:
-        transactions_excel = read_financial_operations_from_excel(file_path_excel)
-        print("Считанные транзакции:")
-        for transaction_excel in transactions_excel:
-            print(transaction_excel)
-    except (FileReadError, EmptyFileError, InvalidFileFormatError, FileNotFoundError) as e:
-        print(f"Ошибка: {e}")
+    main()
