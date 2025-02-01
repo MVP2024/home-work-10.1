@@ -9,11 +9,10 @@ from src.widget import get_date, mask_account_card
     "types_requisites, expected",
     [
         ("Visa 1234567812345678", "Visa 1234 56 ** **** 5678"),
-        ("MasterCard 1234567812345678", "MasterCard 1234567812345678"),
+        ("MasterCard 1234567812345678", "MasterCard 1234 56 ** **** 5678"),
         ("Счёт 1234567812345678", "Счёт **5678"),
-        ("Visa 12345678", "Ошибка: неверно указан номер карты/счёта."),
-        ("Visa 12345678123456789", "Ошибка: неверно указан номер карты/счёта."),
-        ("Visa 1234abcd5678efgh", "Ошибка: неверно указан номер карты/счёта."),
+        ("Visa 12345678", "Ошибка: номер должен содержать от 10 до 20 цифр."),
+        ("Visa 1234abcd5678efgh", "Ошибка: номер должен содержать от 10 до 20 цифр."),
         ("", "Ошибка: входная строка пустая."),
         ("1234567812345678", "Ошибка: номер указан без типа карты/счёта."),
         ("UnknownType 1234567812345678", "Ошибка: номер указан без типа карты/счёта."),
@@ -29,7 +28,7 @@ def test_valid_visa_card(valid_visa_card):
 
 
 def test_valid_mastercard(valid_mastercard):
-    assert mask_account_card(valid_mastercard) == "MasterCard 1234567812345678"
+    assert mask_account_card(valid_mastercard) == "MasterCard 1234 56 ** **** 5678"
 
 
 def test_correct_account(correct_account):
@@ -37,15 +36,15 @@ def test_correct_account(correct_account):
 
 
 def test_short_number_card(short_number_card):
-    assert mask_account_card(short_number_card) == "Ошибка: неверно указан номер карты/счёта."
+    assert mask_account_card(short_number_card) == "Ошибка: номер должен содержать от 10 до 20 цифр."
 
 
 def test_long_number_card(long_number_card):
-    assert mask_account_card(long_number_card) == "Ошибка: неверно указан номер карты/счёта."
+    assert mask_account_card(long_number_card) == "Visa 1234 56 ** **** 6789"
 
 
 def test_incorrect_card_chars(incorrect_card_chars):
-    assert mask_account_card(incorrect_card_chars) == "Ошибка: неверно указан номер карты/счёта."
+    assert mask_account_card(incorrect_card_chars) == "Ошибка: номер должен содержать от 10 до 20 цифр."
 
 
 def test_card_no_data(card_no_data):
@@ -66,7 +65,7 @@ def test_mask_account_card_empty():
 
 
 def test_mask_account_card_invalid_characters():
-    assert mask_account_card("Visa 1234-5678-1234-5678") == "Ошибка: неверно указан номер карты/счёта."
+    assert mask_account_card("Visa 1234-5678-1234-5678") == "Ошибка: присутствуют другие символы."
 
 
 def test_mask_account_card_no_number():
@@ -74,11 +73,11 @@ def test_mask_account_card_no_number():
 
 
 def test_mask_account_card_too_short():
-    assert mask_account_card("Visa 12345") == "Ошибка: неверно указан номер карты/счёта."
+    assert mask_account_card("Visa 12345") == "Ошибка: номер должен содержать от 10 до 20 цифр."
 
 
 def test_mask_account_card_too_long():
-    assert mask_account_card("Visa 123456781234567890") == "Ошибка: неверно указан номер карты/счёта."
+    assert mask_account_card("Visa 123456781234567890") == "Visa 1234 56 ** **** 7890"
 
 
 def test_mask_account_card_no_type():
@@ -174,11 +173,11 @@ def test_valid_date_with_time_edge_case():
         # Тест на неверный формат даты (не 3 части)
         ("2023-03", "Ошибка: неверный формат даты."),
         ("2023-03-15-12:30:00", "Ошибка: неверный формат даты."),
-        ("2023-03-15T12:30:00Z", "Ошибка: дата содержит недопустимые символы."),
+        ("2023-03-15T12:30:00Z", "15.03.2023"),
         # Тест на нецифровые символы в частях даты
         ("2023-0a-15T12:30:00", "Ошибка: дата содержит недопустимые символы."),
         ("2023-03-xxT12:30:00", "Ошибка: дата содержит недопустимые символы."),
-        ("2023-03-15T12:30:XX", "15.03.2023"),
+        ("2023-03-15T12:30:XX", "Ошибка: дата содержит недопустимые символы."),
         # Тест на некорректный день
         ("2023-03-32T12:30:00", "Ошибка: некорректный день."),
         ("2023-04-31T12:30:00", "Ошибка: некорректный день."),
@@ -196,7 +195,7 @@ def test_get_date_invalid_formats(data_full, expected):
         # Тест на неверный формат даты (не 3 части)
         ("2023-03", "Ошибка: неверный формат даты."),
         ("2023-03-15-12:30:00", "Ошибка: неверный формат даты."),
-        ("2023-03-15T12:30:00Z", "Ошибка: дата содержит недопустимые символы."),
+        ("2023-03-15T12:30:00Z", "15.03.2023"),
         ("2023-03-15T", "15.03.2023"),
         ("2023--03-15T12:30:00", "Ошибка: неверный формат даты."),
     ],

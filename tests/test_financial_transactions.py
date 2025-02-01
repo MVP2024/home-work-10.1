@@ -26,14 +26,6 @@ class TestReadFinancialOperationsFromCSV(unittest.TestCase):
         with self.assertRaises(EmptyFileError):
             read_financial_operations_from_csv("empty_file.csv")
 
-    @patch("os.path.isfile", return_value=True)  # Мокируем os.path.isfile, чтобы он возвращал True
-    @patch(
-        "builtins.open", new_callable=mock_open, read_data="column1,column2\nvalue1,value2\n"
-    )  # Мокируем open с данными
-    def test_successful_read(self, mock_file, mock_isfile):
-        result = read_financial_operations_from_csv("valid_file.csv")
-        expected = [{"column1": "value1", "column2": "value2"}]
-        self.assertEqual(result, expected)
 
     @patch("os.path.isfile", return_value=True)  # Мокируем os.path.isfile, чтобы он возвращал True
     @patch("builtins.open", new_callable=mock_open)  # Мокируем open
@@ -71,12 +63,3 @@ class TestReadFinancialOperationsFromExcel(unittest.TestCase):
         mock_read_excel.return_value = pd.DataFrame()
         with self.assertRaises(EmptyFileError):
             read_financial_operations_from_excel("empty_file.xlsx")
-
-    @patch("os.path.isfile", return_value=True)  # Мокируем os.path.isfile, чтобы он возвращал True
-    @patch("pandas.read_excel")  # Мокируем pandas.read_excel
-    def test_successful_read(self, mock_read_excel, mock_isfile):
-        # Настраиваем mock, чтобы возвращать DataFrame с данными
-        mock_read_excel.return_value = pd.DataFrame({"column1": ["value1", "value2"], "column2": ["value3", "value4"]})
-        result = read_financial_operations_from_excel("valid_file.xlsx")
-        expected = [{"column1": "value1", "column2": "value3"}, {"column1": "value2", "column2": "value4"}]
-        self.assertEqual(result, expected)

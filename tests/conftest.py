@@ -1,5 +1,8 @@
+from typing import List, Dict, Any
+
 import pytest
 
+from src.bank_operations import filter_bank_operations
 from src.decorators import log
 
 
@@ -110,12 +113,14 @@ def no_type_card():
 
 # Фикстуры для тестирования транзакций
 @pytest.fixture
-def transactions():
+def transactions_3():
+    """Фикстура для предоставления тестовых транзакций."""
     return [
-        {"id": 1, "operationAmount": {"amount": "100.00", "currency": {"code": "USD"}}},
-        {"id": 2, "operationAmount": {"amount": "200.00", "currency": {"code": "RUB"}}},
-        {"id": 3, "operationAmount": {"amount": "150.00", "currency": {"code": "USD"}}},
-        {"id": 4, "operationAmount": {"amount": "250.00", "currency": {"code": "BTC"}}},
+        {'id': 1, 'operationAmount': {'amount': '100.00', 'currency': {'code': 'USD'}}},
+        {'id': 2, 'operationAmount': {'amount': '150.00', 'currency': {'code': 'EUR'}}},
+        {'id': 3, 'currency_code': 'USD', 'amount': '200.00'},  # Простая структура
+        {'id': 4, 'operationAmount': {'amount': '250.00', 'currency': {'code': 'BTC'}}},
+        {'id': 5, 'currency_code': 'EUR', 'amount': '300.00'},  # Простая структура
     ]
 
 
@@ -164,29 +169,37 @@ def raise_error():
     raise ValueError("This is an error")
 
 
-# Фикстура для тестирования функции count_transactions_by_category
+# Фикстура для тестирования filter_bank_operations
 @pytest.fixture
-def transaction_data():
+def transactions_2():
     return [
-        {'id': 1, 'description': 'Food', 'amount': 100},
-        {'id': 2, 'description': 'Transport', 'amount': 50},
-        {'id': 3, 'description': '', 'amount': 200},  # Пустое описание
-        {'id': 4, 'amount': 150},  # Без описания
-        {'id': 5, 'description': 'Utilities', 'amount': 300},
+        {'id': '1', 'description': 'Перевод с карты на карту'},
+        {'id': '2', 'description': 'Открытие вклада'},
+        {'id': '3', 'description': 'Закрытие вклада'},
+        {'id': '4', 'description': 'Перевод на счет'},
+        {'id': '5', 'description': 'Оплата услуг'},
+    ]
+
+def test_filter_by_exact_match(transactions_2):
+    result = filter_bank_operations(transactions_2, 'Перевод с карты на карту')
+    assert len(result) == 1
+    assert result[0]['id'] == '1'
+
+
+# Фикстура для функции count_operations_by_category
+def transactions():
+    """Фикстура для предоставления тестовых транзакций."""
+    return [
+        {'id': 1, 'description': 'Перевод с карты на карту'},
+        {'id': 2, 'description': 'Оплата услуг'},
+        {'id': 3, 'description': 'Перевод на счет'},
+        {'id': 4, 'description': 'Закрытие вклада'},
+        {'id': 5, 'description': 'Перевод с карты на карту'},
     ]
 
 @pytest.fixture
 def categories():
-    return ['Food', 'Transport', 'Utilities', 'Entertainment']
+    """Фикстура для предоставления тестовых категорий."""
+    return ['Перевод', 'Оплата', 'Закрытие']
 
 
-# Фикстура для тестирования функции filter_bank_operations
-@pytest.fixture
-def sample_transactions():
-    return [
-        {'id': 1, 'description': 'Food', 'amount': 100},
-        {'id': 2, 'description': 'Transport', 'amount': 50},
-        {'id': 3, 'description': 'Utilities', 'amount': 300},
-        {'id': 4, 'description': 'Entertainment', 'amount': 200},
-        {'id': 5, 'description': 'Food and Beverages', 'amount': 150},
-    ]

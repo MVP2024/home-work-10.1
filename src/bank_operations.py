@@ -1,9 +1,28 @@
 import re
-from collections import Counter, defaultdict
-from typing import List, Dict, Union, Any, Tuple
+from collections import Counter
+from typing import Any, Dict, List
 
+
+import re
+from typing import List, Dict, Any
 
 def filter_bank_operations(transactions: List[Dict[str, Any]], search_str: str) -> List[Dict[str, Any]]:
+    """
+    Фильтрует список банковских операций по заданной строке поиска.
+    Параметры:
+    transactions : List[Dict[str, Any]]
+        Список транзакций, где каждая транзакция представлена в виде словаря.
+    Search_str : str
+        Строка поиска, по которой будет производиться фильтрация.
+    Возвращает:
+    List[Dict[str, Any]]
+        Список транзакций, которые содержат строку поиска в описании.
+
+    Исключения:
+    ValueError
+        Если transactions не является списком или search_str не является строкой.
+    """
+
     if not isinstance(transactions, list):
         raise ValueError("transactions должен быть списком словарей")
     if not isinstance(search_str, str):
@@ -20,14 +39,28 @@ def filter_bank_operations(transactions: List[Dict[str, Any]], search_str: str) 
             continue
 
         # Проверяем, содержит ли транзакция описание, соответствующее строке поиска
-        if 'description' in transaction and isinstance(transaction['description'], str) and pattern.search(
-            transaction['description']):
+        if ('description' in transaction and isinstance(transaction['description'], str)
+            and pattern.search(transaction['description'])):
             filtered_transactions.append(transaction)
 
     return filtered_transactions
 
 
 def count_operations_by_category(transactions: List[Dict[str, Any]], categories: List[str]) -> Dict[str, int]:
+    """
+    Подсчитывает количество транзакций по категориям на основе описания транзакций.
+
+    Параметры:
+    transactions (List[Dict[str, Any]]): Список транзакций, где каждая транзакция представлена как словарь.
+    categories (List[str]): Список категорий, по которым нужно подсчитать количество транзакций.
+
+    Возвращает:
+    Dict[str, int]: Словарь, где ключами являются категории, а значениями — количество транзакций для каждой категории.
+
+    Исключения:
+    ValueError: Если хотя бы одна транзакция не является словарем.
+    """
+
     # Проверка, что каждая транзакция является словарем
     for transaction in transactions:
         if not isinstance(transaction, dict):

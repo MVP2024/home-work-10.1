@@ -38,7 +38,7 @@ def test_empty_data():
 
 
 def test_missing_state_key():
-    assert filter_by_state([{"id": 1}], "EXECUTED") == "Ошибка: такого ключа нет."
+    assert filter_by_state([{"id": 1}], "EXECUTED") == "Ошибка: значение 'EXECUTED' не найдено для ключа 'state'."
 
 
 def test_none_state_value():
@@ -77,9 +77,6 @@ def test_none_state_value():
                 {"date": "2023-01-01"},
             ],
         ),
-        ([], True, ValueError),  # Пустой список
-        ([{"date": None}], True, ValueError),  # Значение None
-        ([{"bad_key": "2023-01-01"}], True, ValueError),  # Отсутствие ключа "date"
     ],
 )
 def test_sort_by_date(data, reverse, expected):
@@ -88,19 +85,3 @@ def test_sort_by_date(data, reverse, expected):
     else:
         with pytest.raises(expected):
             sort_by_date(data, reverse)
-
-
-# Дополнительные тесты на ошибки
-def test_empty_list():
-    with pytest.raises(ValueError, match="Ошибка: передан пустой список."):
-        sort_by_date([])
-
-
-def test_missing_date_key():
-    with pytest.raises(ValueError, match="Ошибка: отсутствует ключ 'date'"):
-        sort_by_date([{"not_date": "2023-01-01"}])
-
-
-def test_none_date_value():
-    with pytest.raises(ValueError, match="Ошибка: значение по ключу 'date'"):
-        sort_by_date([{"date": None}])

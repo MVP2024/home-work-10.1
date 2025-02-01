@@ -1,32 +1,11 @@
-
 import os
-from dotenv import load_dotenv
-from unicodedata import category
 
-from src.bank_operations import filter_bank_operations, count_operations_by_category
-# Импортируем необходимые функции и классы
-from src.external_api import convert_to_rub
-from src.financial_transactions import (EmptyFileError, FileReadError, InvalidFileFormatError,
-                                         read_financial_operations_from_csv, read_financial_operations_from_excel)
-from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
-from src.masks import get_mask_account, get_mask_card_number
+from src.bank_operations import count_operations_by_category, filter_bank_operations
+from src.financial_transactions import read_financial_operations_from_csv, read_financial_operations_from_excel
+from src.generators import filter_by_currency, transaction_descriptions
 from src.processing import filter_by_state, sort_by_date
 from src.utils import load_transactions
 from src.widget import get_date, mask_account_card
-
-import csv
-import pandas as pd
-import json
-from typing import List, Dict, Any
-
-from src.logger import setup_logger
-from src.decorators import log
-import re
-
-
-import os
-import re
-from typing import List, Dict, Any, Tuple, Union
 
 
 def main():
@@ -62,7 +41,8 @@ def main():
     valid_statuses = ["EXECUTED", "CANCELED", "PENDING"]
     status = ''
     while status.upper() not in valid_statuses:
-        status = input("Введите статус, по которому необходимо выполнить фильтрацию (EXECUTED, CANCELED, PENDING): ").upper()
+        status = input("Введите статус, по которому необходимо выполнить фильтрацию."
+                       "Доступные для фильтровки статусы: (EXECUTED, CANCELED, PENDING): ").upper()
         if status not in valid_statuses:
             print(f"Статус операции \"{status}\" недоступен. Попробуйте снова.")
 
@@ -89,9 +69,6 @@ def main():
         ascending = order_choice == '1'
         filtered_transactions = sort_by_date(filtered_transactions, reverse=not ascending)
 
-        order_text = "возрастанию" if ascending else "убыванию"
-        # print(f'Вывод списка отсортированного по {order_text}: {filtered_transactions}.')
-
     # Запрос на фильтрацию по валюте
     currency_filter = input("Выводить только рублевые транзакции? Да/Нет: ").strip().lower()
     if currency_filter == 'да':
@@ -112,22 +89,26 @@ def main():
         filtered_transactions = filter_bank_operations(filtered_transactions, keyword)
 
     if not filtered_transactions:
-        print(f"Не найдено ни одной транзакции, соответствующей критериям фильтрации по описанию категории: \\{keyword}\\.")
-
+        print(f"Не найдено ни одной транзакции, соответствующей критериям фильтрации по описанию: \\{keyword}\\.")
 
     if filtered_transactions:
         # Переводим в список и возвращаем описание каждой операции после фильтрации списка
         categories = list(transaction_descriptions(filtered_transactions))
 
         # Подсчитываем количество операций в отфильтрованном списке.
-        print(f"Всего банковских операций в выборке: {count_operations_by_category(filtered_transactions, categories)}")
-        for txn in filtered_transactions:
-            print(f"{get_date(txn.get('date'))}: {txn.get('description')}")
+        print(f"Всего банковских операций в выборке: "
+              f"{count_operations_by_category(filtered_transactions, categories)}")
 
+        for txn in filtered_transactions:
+            # Получаем дату
+            print(f"{get_date(txn.get('date'))}: {txn.get('description')}")
+            # Получаем маскированные карты или счета
             print(f"{mask_account_card(txn.get('from'))} -> {mask_account_card(txn.get('to'))}")
-            amount = txn.get('amount') or txn.get('operationAmount', {}).get('amount')  # Получаем сумму
-            currency = txn.get('operationAmount', {}).get("currency", {}).get('code') or txn.get('currency_code')  # Получаем валюту
-            print(f"Сумма: {amount} {currency}\n")
+            # Получаем сумму
+            amount = txn.get('amount') or txn.get('operationAmount', {}).get('amount')
+            # Получаем валюту
+            currency = txn.get('operationAmount', {}).get("currency", {}).get('code') or txn.get('currency_code')
+            print(f"Сумма: {int(amount)} {currency}\n")
 
 
 if __name__ == "__main__":
