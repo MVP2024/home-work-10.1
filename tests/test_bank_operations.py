@@ -53,6 +53,8 @@ def test_filter_bank_operations():
 
 # Тестирование функции count_operations_by_category
 def test_count_operations_by_category():
+    # Тестирует функцию count_operations_by_category с обычными данными.
+    # Проверяет, что функция правильно считает количество операций по категориям.
     transactions = [
         {"description": "Покупка в магазине"},
         {"description": "Покупка продуктов"},
@@ -65,24 +67,27 @@ def test_count_operations_by_category():
     expected_result = {"еда": 0, "покупка": 2, "топливо": 1, "досуг": 0}
     assert count_operations_by_category(transactions, categories) == expected_result
 
-
 def test_empty_transactions():
+    # Тестирует функцию count_operations_by_category с пустым списком транзакций.
+    # Проверяет, что функция возвращает нулевые значения для всех категорий.
     transactions = []
     categories = ["еда", "товары"]
 
     expected_result = {"еда": 0, "товары": 0}
     assert count_operations_by_category(transactions, categories) == expected_result
 
-
 def test_no_categories():
+    # Тестирует функцию count_operations_by_category без категорий.
+    # Проверяет, что функция возвращает пустой словарь.
     transactions = [{"description": "Покупка в магазине"}, {"description": "Покупка продуктов"}]
     categories = []
 
     expected_result = {}
     assert count_operations_by_category(transactions, categories) == expected_result
 
-
 def test_non_dict_transaction():
+    # Тестирует функцию count_operations_by_category с некорректными данными.
+    # Проверяет, что функция вызывает ValueError, если элемент не является словарем.
     transactions = [{"description": "Покупка в магазине"}, "Не словарь"]
     categories = ["еда"]
 
@@ -90,8 +95,9 @@ def test_non_dict_transaction():
         count_operations_by_category(transactions, categories)
     assert str(excinfo.value) == "Каждый элемент transactions должен быть словарем."
 
-
 def test_case_insensitivity():
+    # Тестирует функцию count_operations_by_category с учетом регистра.
+    # Проверяет, что функция правильно считает количество операций, игнорируя регистр.
     transactions = [
         {"description": "Покупка в магазине"},
         {"description": "Покупка продуктов"},
