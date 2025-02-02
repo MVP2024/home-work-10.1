@@ -1,5 +1,6 @@
 import pytest
 
+from src.bank_operations import filter_bank_operations
 from src.decorators import log
 
 
@@ -110,12 +111,14 @@ def no_type_card():
 
 # Фикстуры для тестирования транзакций
 @pytest.fixture
-def transactions():
+def transactions_3():
+    """Фикстура для предоставления тестовых транзакций."""
     return [
         {"id": 1, "operationAmount": {"amount": "100.00", "currency": {"code": "USD"}}},
-        {"id": 2, "operationAmount": {"amount": "200.00", "currency": {"code": "RUB"}}},
-        {"id": 3, "operationAmount": {"amount": "150.00", "currency": {"code": "USD"}}},
+        {"id": 2, "operationAmount": {"amount": "150.00", "currency": {"code": "EUR"}}},
+        {"id": 3, "currency_code": "USD", "amount": "200.00"},  # Простая структура
         {"id": 4, "operationAmount": {"amount": "250.00", "currency": {"code": "BTC"}}},
+        {"id": 5, "currency_code": "EUR", "amount": "300.00"},  # Простая структура
     ]
 
 
@@ -162,3 +165,39 @@ def divide(a, b):
 @log()
 def raise_error():
     raise ValueError("This is an error")
+
+
+# Фикстура для тестирования filter_bank_operations
+@pytest.fixture
+def transactions_2():
+    return [
+        {"id": "1", "description": "Перевод с карты на карту"},
+        {"id": "2", "description": "Открытие вклада"},
+        {"id": "3", "description": "Закрытие вклада"},
+        {"id": "4", "description": "Перевод на счет"},
+        {"id": "5", "description": "Оплата услуг"},
+    ]
+
+
+def test_filter_by_exact_match(transactions_2):
+    result = filter_bank_operations(transactions_2, "Перевод с карты на карту")
+    assert len(result) == 1
+    assert result[0]["id"] == "1"
+
+
+# Фикстура для функции count_operations_by_category
+def transactions():
+    """Фикстура для предоставления тестовых транзакций."""
+    return [
+        {"id": 1, "description": "Перевод с карты на карту"},
+        {"id": 2, "description": "Оплата услуг"},
+        {"id": 3, "description": "Перевод на счет"},
+        {"id": 4, "description": "Закрытие вклада"},
+        {"id": 5, "description": "Перевод с карты на карту"},
+    ]
+
+
+@pytest.fixture
+def categories():
+    """Фикстура для предоставления тестовых категорий."""
+    return ["Перевод", "Оплата", "Закрытие"]

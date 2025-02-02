@@ -1,4 +1,4 @@
 [flake8]
 max-line-length = 119
 exclude = .git, __pycache__, .\.venv
-ignore = VNE001
+ignore = VNE001, W503, E129

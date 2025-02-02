@@ -1,118 +1,169 @@
 import os
+from typing import List
 
-from dotenv import load_dotenv
-
-from src.data_files import data, transactions
-from src.external_api import convert_to_rub
-from src.financial_transactions import (EmptyFileError, FileReadError, InvalidFileFormatError,
-                                        read_financial_operations_from_csv, read_financial_operations_from_excel)
-from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
-from src.masks import get_mask_account, get_mask_card_number
+from src.bank_operations import count_operations_by_category, filter_bank_operations
+from src.financial_transactions import read_financial_operations_from_csv, read_financial_operations_from_excel
+from src.generators import filter_by_currency, transaction_descriptions
+from src.logger import setup_logger
 from src.processing import filter_by_state, sort_by_date
-from src.utils import load_transactions
+from src.utils import load_transactions, logger
 from src.widget import get_date, mask_account_card
 
-load_dotenv()
-print("Текущая рабочая директория:", os.getcwd())
+# Логируем инициализацию модуля
+logger.info("Инициализация модуля main")
 
-""" Вывод всех функций. """
-if __name__ == "__main__":
 
-    """Вывод замаскированного номера карты и счёта"""
-    print(get_mask_card_number("7854121223455678"))
-    print(get_mask_card_number("78541212234"))
-    print(get_mask_card_number("7854121223455678444445"))
-    print(get_mask_card_number("78541апр555678рп"))
-    print(get_mask_card_number(""))
-    print(get_mask_account("7854121223455678"))
-    print(get_mask_account("78541211-*/45567"))
-    print(get_mask_account(""))
-    print(get_mask_card_number(" "))
+def main() -> None:
+    """Главная функция программы для работы с банковскими транзакциями.
 
-    """Вывод название карты и скрытого номера
-     или счёта со скрытым номером """
-    print(mask_account_card("Visa Platinum 7000792289606361"))
-    print(mask_account_card("Visa Silver 7000792289606361"))
-    print(mask_account_card(""))
-    print(mask_account_card("Maestro Bobr Kurwa 2345567889455565"))
-    print(mask_account_card("Счет 73654108430135874305"))
-    print(mask_account_card("Счёт 7365410/**874305"))
-    print(mask_account_card("Счёт 2345234578894556"))
-    print(mask_account_card("123456"))
-    print(mask_account_card("MasterCard 123456"))
-    print(mask_account_card("MasterCard 1234567890369854"))
-    print(mask_account_card("MasterCard 12345656756767657676"))
-    print(mask_account_card("MasterCard 123/*/*///*//*kjhkjhkjhkj456"))
-    print(mask_account_card("MasterCard 123456/*/*/"))
+    Настраивает логгер, отображает меню для выбора источника данных и загружает
+    транзакции из выбранного файла (JSON, CSV или XLSX). Если транзакции не найдены,
+    выводит соответствующее сообщение.
+    """
+    # Настройка логгера для модуля main
+    logger = setup_logger(__name__)
 
-    """Вывод даты"""
-    print(get_date("2024-03-11T02:26:18.671407"))
-    print(get_date("2054---3--11:26:18.671407"))
-    print(get_date(""))
-    print(get_date("4587^1"))
+    logger.info("Программа запущена.")
+    print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
 
-    """Вывод отсортированного списка по state"""
-    print(filter_by_state(data, "EXECUTED"))
-    print(filter_by_state(data, "CANCELED"))
+    lst_transactions = []
 
-    """Вывод списка по date отсортированного (по-умолчанию) на убывание"""
-    print(sort_by_date(data, True))
+    # Выбор пункта меню
+    while True:
+        print("Выберите необходимый пункт меню:")
+        print("1. Получить информацию о транзакциях из JSON-файла")
+        print("2. Получить информацию о транзакциях из CSV-файла")
+        print("3. Получить информацию о транзакциях из XLSX-файла")
 
-    """Вызов функции - генератора filter_by_currency"""
-    usd_transactions = filter_by_currency(transactions, "USD")
-    """Вывод отфильтрованных транзакций"""
-    for transaction in usd_transactions:
-        print(transaction)
+        choice = input("Пожалуйста, введите номер пункта: ")
 
-    usd_transactions = filter_by_currency(transactions, "RUB")
-    """Вывод отфильтрованных транзакций"""
-    for transaction in usd_transactions:
-        print(transaction)
+        if choice == "1":
+            file_path = os.path.join(os.path.dirname(__file__), "..", "data", "operations.json")
+            lst_transactions = load_transactions(file_path)
+            logger.info("Обработка JSON-файла: %s", file_path)
+            print("Для обработки выбран JSON-файл.")
+            break
+        elif choice == "2":
+            file_path = os.path.join(os.path.dirname(__file__), "..", "data", "transactions.csv")
+            lst_transactions = read_financial_operations_from_csv(file_path)
+            logger.info("Обработка CSV-файла: %s", file_path)
+            print("Для обработки выбран CSV-файл.")
+            break
+        elif choice == "3":
+            file_path = os.path.join(os.path.dirname(__file__), "..", "data", "transactions_excel.xlsx")
+            lst_transactions = read_financial_operations_from_excel(file_path)
+            logger.info("Обработка XLSX-файла: %s", file_path)
+            print("Для обработки выбран XLSX-файл.")
+            break
+        else:
+            logger.warning("Неверный выбор пользователя: %s", choice)
+            print(f'Пункт "{choice}" недоступен. Пожалуйста, попробуйте снова.')
 
-    """Вызов функции - генератора transaction_descriptions"""
-    descriptions = transaction_descriptions(transactions)
-    for _ in range(2):  # Печатаем 2 описания
-        print(next(descriptions))
+    if not lst_transactions:
+        logger.warning("Не найдено ни одной транзакции в файле.")
+        print("Не найдено ни одной транзакции в файле.")
+        return
 
-    """Вызов функции - генератора для создания номеров банковских карт"""
-    for card_number in card_number_generator(12, 14):
-        print(card_number)
+    valid_statuses = ["EXECUTED", "CANCELED", "PENDING"]
 
-    """Вызов функции для конвертации валюты"""
-    print("Загрузка транзакций...")
-    # Используем относительный путь к файлу
-    transactions_json = load_transactions("../data/operations.json")
+    # Запрос статуса с циклом
+    while True:
+        status = input(
+            "Введите статус, по которому необходимо выполнить фильтрацию "
+            "(EXECUTED, CANCELED, PENDING) или EXIT для выхода из программы: "
+        ).upper()
 
-    if not transactions_json:
-        print("Нет доступных транзакций для обработки.")
+        if status == "EXIT":
+            logger.info("Пользователь вышел из программы.")
+            print("Выход из программы.")
+            return
+
+        if status in valid_statuses:
+            break
+        else:
+            logger.warning("Некорректный статус операции: %s", status)
+            print(f'Статус операции "{status}" недоступен. Пожалуйста, попробуйте снова.')
+
+    # Фильтруем транзакции
+    filtered_transactions = filter_by_state(lst_transactions, status)
+    logger.info("Фильтрация транзакций по статусу: %s", status)
+
+    # Запрос на сортировку
+    while True:
+        sort_choice = input("Отсортировать операции по дате? Да/Нет: ").strip().lower()
+        if sort_choice == "да":
+            while True:
+                order_choice = input(
+                    "Введите 1, чтобы отсортировать по возрастанию или 2, чтобы отсортировать по убыванию: "
+                ).strip()
+                if order_choice in ["1", "2"]:
+                    ascending = order_choice == "1"
+                    logger.info(f"Сортировка по {'возрастанию' if ascending else 'убыванию'}.")
+                    print(f"Сортировка по {'возрастанию' if ascending else 'убыванию'}.")
+                    filtered_transactions = sort_by_date(filtered_transactions, reverse=not ascending)
+                    break
+                else:
+                    logger.warning("Неверный ввод для сортировки.")
+                    print("Неверный ввод. Пожалуйста, попробуйте еще раз.")
+            break
+        elif sort_choice == "нет":
+            logger.info("Сортировка не требуется.")
+            print("Сортировка не требуется.")
+            break
+        else:
+            print("Неверный ввод. Пожалуйста, введите 'Да' или 'Нет'.")
+
+    # Запрос на фильтрацию по валюте
+    currency_filter = input("Выводить только рублевые транзакции? Да/Нет: ").strip().lower()
+    if currency_filter == "да":
+        filtered_transactions = list(filter_by_currency(filtered_transactions, "RUB"))
+        logger.info("Фильтрация по валюте: выбраны только рублевые транзакции.")
+
+    # Запрос на фильтрацию по описанию
+    description_filter = (
+        input("Отфильтровать список транзакций по определенному слову в описании? Да/Нет: ").strip().lower()
+    )
+    if description_filter == "да":
+        keyword = input("Введите слово для фильтрации по описанию: ")
+        filtered_transactions = filter_bank_operations(filtered_transactions, keyword)
+        logger.info(f"Фильтрация по описанию: выбраны транзакции с ключевым словом '{keyword}'.")
+
+    if filtered_transactions:
+        # Переводим в список и возвращаем описание каждой операции после фильтрации списка
+        categories: List[str] = list(transaction_descriptions(filtered_transactions))
+
+        # Подсчитываем количество операций в отфильтрованном списке.
+        print(
+            f"Всего банковских операций в выборке: "
+            f"{count_operations_by_category(filtered_transactions, categories)}"
+        )
+
+        # Выводим информацию о каждой транзакции
+        for txn in filtered_transactions:
+            # Получаем дату
+            date_str = get_date(txn.get("date"))
+            print(f"{date_str}: {txn.get('description')}")
+
+            # Получаем маскированные карты или счета
+            print(f"{mask_account_card(txn.get('from'))} -> {mask_account_card(txn.get('to'))}")
+
+            # Получаем сумму и округляем ее до целого числа
+            amount = txn.get("amount") or txn.get("operationAmount", {}).get("amount")
+            amount = int(float(amount))  # Округление до целого числа
+
+            # Получаем валюту
+            currency: str = txn.get("operationAmount", {}).get("currency", {}).get("code") or txn.get("currency_code")
+            print(f"Сумма: {amount} {currency}\n")
+
+            # Логируем каждую транзакцию
+            logger.info(
+                f"Транзакция: Дата - {date_str}, Описание - {txn.get('description')}, " f"Сумма - {amount} {currency}"
+            )
+
     else:
-        print(f"Найдено {len(transactions_json)} транзакций.")
-        for transaction in transactions_json:
-            print(f"Обрабатываем транзакцию: {transaction}")
-            try:
-                amount_in_rub = convert_to_rub(transaction)
-                print(f"Сумма транзакции в рублях: {amount_in_rub}")
-            except ValueError as e:
-                print(f"Ошибка при конвертации: {e}")
+        print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
+        logger.warning("Не найдено ник какой-либо транзакции после фильтрации.")
 
-    """Вызов функции для считывания файла формата csv."""
-    # Создаём абсолютный путь к файлу csv.
-    file_path_csv = os.path.join(os.path.dirname(__file__), "..", "data", "transactions.csv")  # Путь к файлу
-    try:
-        transactions_csv = read_financial_operations_from_csv(file_path_csv)
-        print("Считанные транзакции:")
-        for transaction_csv in transactions_csv:
-            print(transaction_csv)
-    except (FileReadError, EmptyFileError, InvalidFileFormatError, FileNotFoundError) as e:
-        print(f"Ошибка: {e}")
 
-    """Вызов функции для считывания файла формата xlsx."""
-    # Создаём абсолютный путь к файлу xlsx.
-    file_path_excel = os.path.join(os.path.dirname(__file__), "..", "data", "transactions_excel.xlsx")  # Путь к файлу
-    try:
-        transactions_excel = read_financial_operations_from_excel(file_path_excel)
-        print("Считанные транзакции:")
-        for transaction_excel in transactions_excel:
-            print(transaction_excel)
-    except (FileReadError, EmptyFileError, InvalidFileFormatError, FileNotFoundError) as e:
-        print(f"Ошибка: {e}")
+if __name__ == "__main__":
+    main()

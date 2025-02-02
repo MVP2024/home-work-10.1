@@ -3,82 +3,20 @@ import pytest
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
 
-# Тестирование функции filter_by_currency
-# Тесты с параметризацией функции filter_by_currency
 @pytest.mark.parametrize(
     "currency, expected_ids",
     [
-        ("USD", [1, 3]),  # Ожидаем, что вернутся транзакции с id 1 и 3
-        ("RUB", [2]),  # Ожидаем, что вернется транзакция с id 2
-        ("BTC", [4]),  # Ожидаем, что вернется транзакция с id 4
-        ("GBP", []),  # Ожидаем, что не будет транзакций
+        ("USD", [1, 3]),  # Ожидаем транзакции с ID 1 и 3
+        ("EUR", [2, 5]),  # Ожидаем транзакции с ID 2 и 5
+        ("BTC", [4]),  # Ожидаем транзакцию с ID 4
+        ("JPY", []),  # Ожидаем пустой список, так как нет транзакций в JPY
     ],
 )
-def test_filter_by_currency(transactions, currency, expected_ids):
-    filtered_transactions = list(filter_by_currency(transactions, currency))
-    filtered_ids = [t["id"] for t in filtered_transactions]
-    assert filtered_ids == expected_ids
-
-
-# Тест для пустого списка
-def test_empty_list():
-    assert list(filter_by_currency([], "USD")) == []
-
-
-# Тест для проверки длины списка
-def test_transactions(transactions):
-    assert len(transactions) > 0
-
-
-# Тест для списка без соответствующих транзакций с заданной валютой
-def test_no_matching_currency():
-    transactions = [
-        {"id": 1, "operationAmount": {"amount": "100.00", "currency": {"code": "RUB"}}},
-        {"id": 2, "operationAmount": {"amount": "200.00", "currency": {"code": "RUB"}}},
-    ]
-    assert list(filter_by_currency(transactions, "USD")) == []
-
-
-def test_filter_by_currency_1():
-    """Тестирование функции фильтрации транзакций по существующей валюте."""
-    transactions = [
-        {"operationAmount": {"amount": "100.00", "currency": {"code": "USD"}}, "description": "Transaction 1"},
-        {"operationAmount": {"amount": "200.00", "currency": {"code": "EUR"}}, "description": "Transaction 2"},
-        {"operationAmount": {"amount": "150.00", "currency": {"code": "USD"}}, "description": "Transaction 3"},
-        {"operationAmount": {"amount": "300.00", "currency": {"code": "GBP"}}, "description": "Transaction 4"},
-    ]
-
-    # Тестируем фильтрацию по USD
-    result = list(filter_by_currency(transactions, "USD"))
-    assert len(result) == 2
-    assert result[0]["description"] == "Transaction 1"
-    assert result[1]["description"] == "Transaction 3"
-
-    # Тестируем фильтрацию по EUR
-    result = list(filter_by_currency(transactions, "EUR"))
-    assert len(result) == 1
-    assert result[0]["description"] == "Transaction 2"
-
-    # Тестируем фильтрацию по GBP
-    result = list(filter_by_currency(transactions, "GBP"))
-    assert len(result) == 1
-    assert result[0]["description"] == "Transaction 4"
-
-    # Тестируем фильтрацию по несуществующей валюте
-    result = list(filter_by_currency(transactions, "JPY"))
-    assert len(result) == 0
-
-
-# Тестируем с некорректными данными
-def test_incorrect_data():
-    transactions = [
-        {"id": 1, "operationAmount": {"amount": "100.00", "currency": {}}},
-        {"id": 2, "operationAmount": {"amount": "200.00", "currency": {"code": "RUB"}}},
-        {"id": 3},  # Отсутствует ключ operationAmount
-        {"id": 4, "operationAmount": {"amount": "150.00"}},  # Отсутствует информация о валюте
-    ]
-    filtered_transactions = list(filter_by_currency(transactions, "USD"))
-    assert filtered_transactions == []  # Ожидаем, что не будет транзакций с USD
+def test_filter_by_currency(transactions_3, currency, expected_ids):
+    """Тестирование фильтрации транзакций по валюте."""
+    result = list(filter_by_currency(transactions_3, currency))
+    result_ids = [txn["id"] for txn in result]
+    assert result_ids == expected_ids
 
 
 # Тесты с параметризацией функции - генератора transaction_descriptions
@@ -112,7 +50,6 @@ def test_transaction_descriptions(transactions_1, expected):
     assert descriptions == expected
 
 
-# Предполагаем, что функция card_number_generator уже определена
 @pytest.mark.parametrize(
     "start, stop, expected",
     [

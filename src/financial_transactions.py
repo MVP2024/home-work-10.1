@@ -1,6 +1,6 @@
 import csv
 import os
-from typing import Any, Dict, Hashable, List
+from typing import Any, Dict, List
 
 import pandas as pd
 
@@ -23,15 +23,11 @@ class InvalidFileFormatError(Exception):
     pass
 
 
-def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, str]]:
+def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, Any]]:
     """
     Считывает финансовые операции из файла csv
     :param file_path: Путь к файлу
     :return: Список словарей с транзакциями.
-    :raises FileReadError: Если файл не может быть прочитан.
-    :raises EmptyFileError: Если файл пуст или не содержит данных.
-    :raises InvalidFileFormatError: Если файл не является форматом CSV.
-    :raises FileNotFoundError: Если файл не существует.
     """
     # Проверка на существование файла
     if not os.path.isfile(file_path):
@@ -41,10 +37,10 @@ def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, str]]:
     if not file_path.endswith(".csv"):
         raise InvalidFileFormatError("Файл должен быть в формате .csv")
 
-    transactions_from_csv: List[Dict[str, str]] = []  # Изменено на List[Dict[str, str]]
+    transactions_from_csv: List[Dict[str, Any]] = []
     try:
         with open(file_path, "r", newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
+            reader = csv.DictReader(f, delimiter=";")  # Указываем разделитель как точка с запятой
             for row in reader:
                 transactions_from_csv.append(row)
     except Exception as e:
@@ -56,7 +52,7 @@ def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, str]]:
     return transactions_from_csv
 
 
-def read_financial_operations_from_excel(file_path: str) -> list[dict[Hashable, Any]]:
+def read_financial_operations_from_excel(file_path: str) -> List[Dict[str, Any]]:
     """
     Считывает финансовые операции из файла xlsx
     :param file_path: Путь к файлу
@@ -79,9 +75,14 @@ def read_financial_operations_from_excel(file_path: str) -> list[dict[Hashable, 
     except Exception as e:
         raise FileReadError(f"Не удалось прочитать файл: {e}")
 
-    transactions_from_xlsx = df.to_dict(orient="records")
-
-    if not transactions_from_xlsx:
+    # Проверка, есть ли данные в DataFrame
+    if df.empty:
         raise EmptyFileError("Файл пуст или не содержит данных.")
+
+    # Формируем список словарей вручную
+    transactions_from_xlsx = []
+    for index, row in df.iterrows():
+        transaction = {column: row[column] for column in df.columns}
+        transactions_from_xlsx.append(transaction)
 
     return transactions_from_xlsx

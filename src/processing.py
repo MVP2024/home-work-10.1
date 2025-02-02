@@ -16,10 +16,8 @@ def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> Unio
 
     filtered_data = []
     for item in data:
-        if "state" not in item:
-            return "Ошибка: такого ключа нет."
-        # Не добавляем в filtered_data, если значение None
-        if item["state"] is not None and item["state"] == state:
+        # Проверяем наличие ключа "state", если его нет - просто пропускаем элемент
+        if "state" in item and item["state"] is not None and item["state"] == state:
             filtered_data.append(item)
 
     if not filtered_data:
@@ -30,35 +28,35 @@ def filter_by_state(data: List[Dict[str, Any]], state: str = "EXECUTED") -> Unio
 
 @log("mylog.txt")
 def sort_by_date(data: List[Dict[str, Any]], reverse: bool = True) -> List[Dict[str, Any]]:
-    """Сортирует список словарей по дате.
+    """
+    Сортирует список словарей по значению ключа 'date'.
 
-    Аргументы:
-    data (list): Список словарей с данными.
-    reverse (bool): Порядок сортировки (по умолчанию - убывание).
+    Функция фильтрует записи, исключая те, у которых отсутствует ключ 'date'
+    или значение этого ключа пустое. Затем, отсортирует оставшиеся записи
+    по значению ключа 'date'.
 
-    Возвращает:
-    list: Отсортированный список словарей.
-
-    Исключения:
-    ValueError: Если список пуст или если в словаре отсутствует ключ "date" или значение по этому ключу.
+    :param data: Список словарей, где каждый словарь может содержать ключ 'date'.
+    :param reverse: Если True, сортировка будет выполнена в обратном порядке (по умолчанию).
+    :return: Новый отсортированный список словарей.
     """
 
-    # Проверка на пустой список
-    if not data:
-        raise ValueError("Ошибка: передан пустой список.")
-
-    # Функция для извлечения даты из словаря
     def get_date(item: Dict[str, Any]) -> str:
-        # Проверка на наличие ключа "date"
-        if "date" not in item:
-            raise ValueError(f"Ошибка: отсутствует ключ 'date' в словаре {item}.")
+        """
+        Извлекает значение ключа 'date' из словаря.
 
-        date_value = item["date"]
+        Если ключ 'date' отсутствует или его значение пустое, возвращает пустую строку.
 
-        # Проверка на наличие значения по ключу "date"
-        if date_value is None or date_value == "":
-            raise ValueError(f"Ошибка: значение по ключу 'date' в словаре {item} отсутствует.")
+        :param item: Словарь, из которого нужно извлечь значение ключа 'date'.
+        :return: Значение ключа 'date' или пустая строка.
+        """
+        # Проверка наличия ключа "date"
+        if "date" not in item or not item["date"]:
+            return ""  # Возвращаем пустую строку для отсутствующих или пустых значений
 
-        return date_value
+        return item["date"]
 
-    return sorted(data, key=get_date, reverse=reverse)
+    # Фильтруем данные, исключая записи с отсутствующими датами
+    filtered_data = [item for item in data if "date" in item and item["date"]]
+
+    # Сортируем отфильтрованные данные
+    return sorted(filtered_data, key=get_date, reverse=reverse)
