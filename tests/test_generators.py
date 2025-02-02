@@ -3,18 +3,20 @@ import pytest
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
 
-@pytest.mark.parametrize("currency, expected_ids", [
-    ('USD', [1, 3]),  # Ожидаем транзакции с ID 1 и 3
-    ('EUR', [2, 5]),  # Ожидаем транзакции с ID 2 и 5
-    ('BTC', [4]),     # Ожидаем транзакцию с ID 4
-    ('JPY', []),      # Ожидаем пустой список, так как нет транзакций в JPY
-])
+@pytest.mark.parametrize(
+    "currency, expected_ids",
+    [
+        ("USD", [1, 3]),  # Ожидаем транзакции с ID 1 и 3
+        ("EUR", [2, 5]),  # Ожидаем транзакции с ID 2 и 5
+        ("BTC", [4]),  # Ожидаем транзакцию с ID 4
+        ("JPY", []),  # Ожидаем пустой список, так как нет транзакций в JPY
+    ],
+)
 def test_filter_by_currency(transactions_3, currency, expected_ids):
     """Тестирование фильтрации транзакций по валюте."""
     result = list(filter_by_currency(transactions_3, currency))
-    result_ids = [txn['id'] for txn in result]
+    result_ids = [txn["id"] for txn in result]
     assert result_ids == expected_ids
-
 
 
 # Тесты с параметризацией функции - генератора transaction_descriptions

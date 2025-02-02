@@ -1,6 +1,6 @@
 import csv
 import os
-from typing import Any, Dict, Hashable, List
+from typing import Any, Dict, List
 
 import pandas as pd
 
@@ -40,7 +40,7 @@ def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, Any]]:
     transactions_from_csv: List[Dict[str, Any]] = []
     try:
         with open(file_path, "r", newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f, delimiter=';')  # Указываем разделитель как точка с запятой
+            reader = csv.DictReader(f, delimiter=";")  # Указываем разделитель как точка с запятой
             for row in reader:
                 transactions_from_csv.append(row)
     except Exception as e:
@@ -52,7 +52,7 @@ def read_financial_operations_from_csv(file_path: str) -> List[Dict[str, Any]]:
     return transactions_from_csv
 
 
-def read_financial_operations_from_excel(file_path: str) -> list[dict[Hashable, Any]]:
+def read_financial_operations_from_excel(file_path: str) -> List[Dict[str, Any]]:
     """
     Считывает финансовые операции из файла xlsx
     :param file_path: Путь к файлу
@@ -75,9 +75,14 @@ def read_financial_operations_from_excel(file_path: str) -> list[dict[Hashable, 
     except Exception as e:
         raise FileReadError(f"Не удалось прочитать файл: {e}")
 
-    transactions_from_xlsx = df.to_dict(orient="records")
-
-    if not transactions_from_xlsx:
+    # Проверка, есть ли данные в DataFrame
+    if df.empty:
         raise EmptyFileError("Файл пуст или не содержит данных.")
+
+    # Формируем список словарей вручную
+    transactions_from_xlsx = []
+    for index, row in df.iterrows():
+        transaction = {column: row[column] for column in df.columns}
+        transactions_from_xlsx.append(transaction)
 
     return transactions_from_xlsx

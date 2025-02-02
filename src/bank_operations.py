@@ -3,9 +3,6 @@ from collections import Counter
 from typing import Any, Dict, List
 
 
-import re
-from typing import List, Dict, Any
-
 def filter_bank_operations(transactions: List[Dict[str, Any]], search_str: str) -> List[Dict[str, Any]]:
     """
     Фильтрует список банковских операций по заданной строке поиска.
@@ -39,8 +36,11 @@ def filter_bank_operations(transactions: List[Dict[str, Any]], search_str: str) 
             continue
 
         # Проверяем, содержит ли транзакция описание, соответствующее строке поиска
-        if ('description' in transaction and isinstance(transaction['description'], str)
-            and pattern.search(transaction['description'])):
+        if (
+            "description" in transaction
+            and isinstance(transaction["description"], str)
+            and pattern.search(transaction["description"])
+        ):
             filtered_transactions.append(transaction)
 
     return filtered_transactions

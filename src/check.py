@@ -4,8 +4,13 @@ from dotenv import load_dotenv
 
 from src.data_files import data, transactions
 from src.external_api import convert_to_rub
-from src.financial_transactions import (EmptyFileError, FileReadError, InvalidFileFormatError,
-                                        read_financial_operations_from_csv, read_financial_operations_from_excel)
+from src.financial_transactions import (
+    EmptyFileError,
+    FileReadError,
+    InvalidFileFormatError,
+    read_financial_operations_from_csv,
+    read_financial_operations_from_excel,
+)
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
@@ -50,7 +55,7 @@ if __name__ == "__main__":
     print(get_date("2054---3--11:26:18.671407"))
     print(get_date(""))
     print(get_date("4587^1"))
-    print(get_date('2019-05-17T01:50:00.166954'))
+    print(get_date("2019-05-17T01:50:00.166954"))
 
     """Вывод отсортированного списка по state"""
     print(filter_by_state(data, "EXECUTED"))
@@ -71,7 +76,7 @@ if __name__ == "__main__":
         print(transaction)
 
     """Вызов функции - генератора transaction_descriptions"""
-    print(f'Эта функция {transaction_descriptions} что-то делает...')
+    print(f"Эта функция {transaction_descriptions} что-то делает...")
     descriptions = transaction_descriptions(transactions)
     for _ in range(len(transactions)):  # Печатаем 2 описания
         print(next(descriptions))

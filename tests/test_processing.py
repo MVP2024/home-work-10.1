@@ -43,8 +43,9 @@ def test_missing_state_key():
 
 def test_none_state_value():
     assert (
-        filter_by_state([{"id": 1, "state": None}],
-                        "EXECUTED") == "Ошибка: значение 'EXECUTED' не найдено для ключа 'state'.")
+        filter_by_state([{"id": 1, "state": None}], "EXECUTED")
+        == "Ошибка: значение 'EXECUTED' не найдено для ключа 'state'."
+    )
 
 
 # Тестирование функции `sort_by_date`

@@ -26,7 +26,6 @@ class TestReadFinancialOperationsFromCSV(unittest.TestCase):
         with self.assertRaises(EmptyFileError):
             read_financial_operations_from_csv("empty_file.csv")
 
-
     @patch("os.path.isfile", return_value=True)  # Мокируем os.path.isfile, чтобы он возвращал True
     @patch("builtins.open", new_callable=mock_open)  # Мокируем open
     def test_read_file_error(self, mock_file, mock_isfile):

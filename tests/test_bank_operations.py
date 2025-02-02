@@ -1,37 +1,37 @@
 import pytest
 
-from src.bank_operations import filter_bank_operations, count_operations_by_category
-from collections import Counter
+from src.bank_operations import count_operations_by_category, filter_bank_operations
+
 
 # Тестирование функции filter_bank_operations
 def test_filter_bank_operations():
     transactions_3 = [
-        {'id': '1', 'description': 'Перевод с карты на карту'},
-        {'id': '2', 'description': 'Открытие вклада'},
-        {'id': '3', 'description': 'Закрытие вклада'},
-        {'id': '4', 'description': 'Перевод на счет'},
-        {'id': '5', 'description': 'Оплата услуг'},
+        {"id": "1", "description": "Перевод с карты на карту"},
+        {"id": "2", "description": "Открытие вклада"},
+        {"id": "3", "description": "Закрытие вклада"},
+        {"id": "4", "description": "Перевод на счет"},
+        {"id": "5", "description": "Оплата услуг"},
     ]
 
     # Тест 1: Проверка точного совпадения
-    result = filter_bank_operations(transactions_3, 'Перевод с карты на карту')
-    assert len(result) == 1 and result[0]['id'] == '1', "Тест 1 не пройден"
+    result = filter_bank_operations(transactions_3, "Перевод с карты на карту")
+    assert len(result) == 1 and result[0]["id"] == "1", "Тест 1 не пройден"
 
     # Тест 2: Проверка частичного совпадения
-    result = filter_bank_operations(transactions_3, 'перевод')
+    result = filter_bank_operations(transactions_3, "перевод")
     assert len(result) == 2, "Тест 2 не пройден"
 
     # Тест 3: Проверка с пустой строкой
-    result = filter_bank_operations(transactions_3, '')
+    result = filter_bank_operations(transactions_3, "")
     assert result == [], "Тест 3 не пройден"
 
     # Тест 4: Проверка с несуществующим ключевым словом
-    result = filter_bank_operations(transactions_3, 'неизвестное слово')
+    result = filter_bank_operations(transactions_3, "неизвестное слово")
     assert result == [], "Тест 4 не пройден"
 
     # Тест 5: Проверка с неправильным типом transactions
     try:
-        filter_bank_operations("неправильный тип", 'перевод')
+        filter_bank_operations("неправильный тип", "перевод")
     except ValueError:
         pass  # Ожидаем исключение
 
@@ -43,11 +43,11 @@ def test_filter_bank_operations():
 
     # Тест 7: Проверка с транзакцией, которая не является словарем
     transactions_with_non_dict = [
-        {'id': '1', 'description': 'Перевод с карты на карту'},
-        'не словарь',  # Неверный элемент
-        {'id': '2', 'description': 'Открытие вклада'},
+        {"id": "1", "description": "Перевод с карты на карту"},
+        "не словарь",  # Неверный элемент
+        {"id": "2", "description": "Открытие вклада"},
     ]
-    result = filter_bank_operations(transactions_with_non_dict, 'перевод')
+    result = filter_bank_operations(transactions_with_non_dict, "перевод")
     assert len(result) == 1, "Тест 7 не пройден"
 
 
@@ -75,10 +75,7 @@ def test_empty_transactions():
 
 
 def test_no_categories():
-    transactions = [
-        {"description": "Покупка в магазине"},
-        {"description": "Покупка продуктов"}
-    ]
+    transactions = [{"description": "Покупка в магазине"}, {"description": "Покупка продуктов"}]
     categories = []
 
     expected_result = {}
@@ -86,10 +83,7 @@ def test_no_categories():
 
 
 def test_non_dict_transaction():
-    transactions = [
-        {"description": "Покупка в магазине"},
-        "Не словарь"
-    ]
+    transactions = [{"description": "Покупка в магазине"}, "Не словарь"]
     categories = ["еда"]
 
     with pytest.raises(ValueError) as excinfo:
@@ -101,7 +95,7 @@ def test_case_insensitivity():
     transactions = [
         {"description": "Покупка в магазине"},
         {"description": "Покупка продуктов"},
-        {"description": "Топливо для автомобиля"}
+        {"description": "Топливо для автомобиля"},
     ]
     categories = ["ЕДА", "покупка", "ТОПЛИВО"]
 
