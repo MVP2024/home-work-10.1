@@ -54,4 +54,4 @@ def convert_to_rub(transaction: Dict[str, Any]) -> float:
         converted_amount = data["result"]
         return converted_amount
     else:
-        raise ValueError("Не удалось получить курс для RUB.")
+        raise ValueError(f"Не удалось получить курс для {currency_code}.")
